@@ -3,7 +3,8 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.15
-Release: 1%{?dist_tag}
+Release: 2%{?dist_tag}
+
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -123,6 +124,9 @@ fi
 
 
 %changelog
+* Fri Apr  7 2005 Michael Schwendt <mschwendt[AT]users.sf.net>
+- rebuilt
+
 * Tue Feb  1 2005 Michael Schwendt <mschwendt[AT]users.sf.net> - 0:1.9.15-1
 - Make install-info in scriptlets less noisy.
 
