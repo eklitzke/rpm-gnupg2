@@ -1,18 +1,17 @@
-# $Id: gnupg.spec,v 1.7 2003/12/11 14:17:11 rexdieter Exp $
+# $Id$
 
 Summary: GNU utility for secure communication and data storage
-Name:	 gnupg2 
-Epoch:	 0 
+Name:    gnupg2
 Version: 1.9.15
 Release: 1%{?dist_tag}
 License: GPL
-Group: 	 Applications/System
+Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
 Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
-URL:	 http://www.gnupg.org/
+URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
-Obsoletes: newpg < 0:0.9.5
+Obsoletes: newpg < 0.9.5
 
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
@@ -24,11 +23,11 @@ BuildRequires: gcc
 %define pie 1
 %endif
 
-BuildRequires: libgcrypt-devel => 0:1.2.0
+BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
 Requires: libgpg-error >= 1.0
 BuildRequires: libassuan-devel >= 0.6.9
-BuildRequires: libksba-devel >= 0:0.9.7
+BuildRequires: libksba-devel >= 0.9.7
 # to build without opensc support: --without opensc
 %{!?_without_opensc:BuildRequires: opensc-devel >= 0.9}
 %{!?_without_opensc:BuildRequires: pcsc-lite-devel }
@@ -43,11 +42,11 @@ BuildRequires: bzip2-devel
 Buildrequires: libusb-devel
 BuildRequires: docbook-utils
 
-Requires: pinentry >= 0:0.7.1
+Requires: pinentry >= 0.7.1
 
 # Should these be versioned?  -- Rex
-Provides: gpg 
-Provides: openpgp 
+Provides: gpg
+Provides: openpgp
 
 %description
 GnuPG 1.9 is the future version of GnuPG; it is based on the gnupg-1.3
@@ -72,7 +71,7 @@ helpful when using the standard gpg versions (1.2.x or 1.3.x).
 
 %configure \
   --program-prefix="%{?_program_prefix}" \
-  --disable-rpath 
+  --disable-rpath
 
 make %{?_smp_mflags}
 
@@ -139,7 +138,7 @@ fi
 - BR: libassuan-devel >= 0.6.9
 
 * Thu Oct 21 2004 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.11-0.fdr.4
-- remove suid. 
+- remove suid.
 
 * Thu Oct 21 2004 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.11-0.fdr.3
 - remove Provides: newpg
@@ -150,6 +149,6 @@ fi
 - update description
 
 * Tue Oct 19 2004 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.11-0.fdr.1
-- first try 
+- first try
 - leave out opensc support (for now), enable --with-opensc
 
