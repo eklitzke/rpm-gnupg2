@@ -3,7 +3,7 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.15
-Release: 2%{?dist_tag}
+Release: 3%{?dist_tag}
 
 License: GPL
 Group:   Applications/System
@@ -124,6 +124,9 @@ fi
 
 
 %changelog
+* Sat May  7 2005 David Woodhouse <dwmw2@infradead.org> 1.9.15-3
+- Rebuild.
+
 * Fri Apr  7 2005 Michael Schwendt <mschwendt[AT]users.sf.net>
 - rebuilt
 
