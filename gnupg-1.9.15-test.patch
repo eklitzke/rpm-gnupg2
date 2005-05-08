@@ -1,0 +1,20 @@
+diff -Nur gnupg-1.9.15-orig/tests/asschk.c gnupg-1.9.15/tests/asschk.c
+--- gnupg-1.9.15-orig/tests/asschk.c	2003-01-09 14:09:54.000000000 +0100
++++ gnupg-1.9.15/tests/asschk.c	2005-05-08 20:59:25.000000000 +0200
+@@ -273,6 +273,7 @@
+   while (nleft > 0)
+     {
+       int n;
++      printf("nleft = %d\nn = %d\npending_len = %d\n",nleft,n,pending_len);
+ 
+       if (pending_len)
+         {
+diff -Nur gnupg-1.9.15-orig/tests/runtest gnupg-1.9.15/tests/runtest
+--- gnupg-1.9.15-orig/tests/runtest	2004-02-20 14:46:35.000000000 +0100
++++ gnupg-1.9.15/tests/runtest	2005-05-08 21:00:43.000000000 +0200
+@@ -1,4 +1,4 @@
+ #!/bin/sh
+ [ -x "$1" ] && exec $1 $2
+-exec ./asschk --no-echo -DGPGSM=${GPGSM} <"$1"
++exec ./asschk --verbose --no-echo -DGPGSM=${GPGSM} <"$1"
+ 

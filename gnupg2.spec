@@ -3,13 +3,14 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.15
-Release: 3%{?dist_tag}
+Release: 4%{?dist_tag}
 
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
 Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
 URL:     http://www.gnupg.org/
+Patch0:  gnupg-1.9.15-test.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 Obsoletes: newpg < 0.9.5
@@ -63,6 +64,7 @@ helpful when using the standard gpg versions (1.2.x or 1.3.x).
 
 %prep
 %setup -q -n gnupg-%{version}
+%patch0 -p1 -b .test
 
 
 %build
@@ -124,6 +126,9 @@ fi
 
 
 %changelog
+* Sun May  8 2005 Michael Schwendt <mschwendt[AT]users.sf.net> - 1.9.15-4
+- Add patch0 temporarily to get some output from failing test.
+
 * Sat May  7 2005 David Woodhouse <dwmw2@infradead.org> 1.9.15-3
 - Rebuild.
 
