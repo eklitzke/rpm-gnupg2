@@ -1,0 +1,9 @@
+diff -Nur gnupg-1.9.16-orig/tests/runtest gnupg-1.9.16/tests/runtest
+--- gnupg-1.9.16-orig/tests/runtest	2004-02-20 14:46:35.000000000 +0100
++++ gnupg-1.9.16/tests/runtest	2005-05-10 07:49:56.000000000 +0200
+@@ -1,4 +1,4 @@
+ #!/bin/sh
+ [ -x "$1" ] && exec $1 $2
+-exec ./asschk --no-echo -DGPGSM=${GPGSM} <"$1"
++exec ./asschk --verbose --no-echo -DGPGSM=${GPGSM} <"$1"
+ 

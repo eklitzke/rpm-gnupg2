@@ -1,0 +1,11 @@
+--- gnupg-1.9.16/scd/command.c.pth	2005-04-20 05:23:46.000000000 -0500
++++ gnupg-1.9.16/scd/command.c	2005-04-26 09:17:35.000000000 -0500
+@@ -1264,7 +1264,7 @@
+   else
+     locked_session = ctrl->server_local;
+ 
+-#ifdef USE_GNU_PTH
++#if 0
+   if (rc && has_option (line, "--wait"))
+     {
+       pth_sleep (1); /* Better implement an event mechanism. However,

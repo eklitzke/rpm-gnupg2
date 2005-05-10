@@ -1,16 +1,17 @@
-# $Id$
-
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.15
-Release: 4%{?dist_tag}
-
+Version: 1.9.16
+Release: 1%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
 Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
 URL:     http://www.gnupg.org/
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+Patch0: gnupg-1.9.16-pth.patch
+Patch1: gnupg-1.9.16-strsignal.patch
+Patch2: gnupg-1.9.16-testverbose.patch
 
 Obsoletes: newpg < 0.9.5
 
@@ -28,12 +29,9 @@ BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
 Requires: libgpg-error >= 1.0
 BuildRequires: libassuan-devel >= 0.6.9
-BuildRequires: libksba-devel >= 0.9.7
-# to build without opensc support: --without opensc
-%{!?_without_opensc:BuildRequires: opensc-devel >= 0.9}
-%{!?_without_opensc:BuildRequires: pcsc-lite-devel }
-%{?_without_opensc:BuildConflicts: opensc-devel }
-
+BuildRequires: libksba-devel >= 0.9.11
+BuildRequires: opensc-devel >= 0.9
+BuildRequires: pcsc-lite-devel
 BuildRequires: gettext
 BuildRequires: openldap-devel
 BuildRequires: libusb-devel
@@ -50,19 +48,24 @@ Provides: gpg
 Provides: openpgp
 
 %description
-GnuPG 1.9 is the future version of GnuPG; it is based on the gnupg-1.3
-code and the previous newpg package.  It will eventually lead to a
-GnuPG 2.0 release.  Note that GnuPG 1.3 and 1.9 are not always in sync
-and thus features and bug fixes done in 1.3 are not necessary
-available in 1.9.
+GnuPG 1.9 is the development version of GnuPG; it is based on some old
+GnuPG 1.3 code and the previous NewPG package.  It will eventually
+lead to a GnuPG 2.0 release.  Note that GnuPG 1.4 and 1.9 are not yet
+in sync and thus features and bug fixes done in 1.4 are not available
+in 1.9.  *Please keep on using 1.4.x for OpenPGP*; 1.9.x and 1.4.x may
+be installed simultaneously.
 
-You should use this GnuPG version if you want to use the gpg-agent or
-gpgsm (the S/MIME variant of gpg).  Note that the gpg-agent is also
-helpful when using the standard gpg versions (1.2.x or 1.3.x).
+You should use GnuPG 1.9 if you want to use the gpg-agent or gpgsm
+(the S/MIME variant of gpg).  The gpg-agent is also helpful when using
+the stable gpg version 1.4 (as well as the old 1.2 series).
 
 
 %prep
 %setup -q -n gnupg-%{version}
+
+%patch0 -p1 -b .pth
+%patch1 -p1 -b .strsignal
+%patch2 -p1 -b .testverbose
 
 
 %build
@@ -72,15 +75,14 @@ helpful when using the standard gpg versions (1.2.x or 1.3.x).
 
 %configure \
   --program-prefix="%{?_program_prefix}" \
-  --disable-rpath
+  --disable-rpath \
+  --enable-gpg
 
 make %{?_smp_mflags}
 
+
+%check || :
 make check
-
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 
 %install
@@ -94,11 +96,11 @@ rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 
 %post
-/sbin/install-info %{_infodir}/gnupg.info.gz %{_infodir}/dir 2>/dev/null ||:
+/sbin/install-info %{_infodir}/gnupg.info %{_infodir}/dir 2>/dev/null ||:
 
 %preun
 if [ $1 -eq 0 ]; then
-  /sbin/install-info --delete %{_infodir}/gnupg.info.gz %{_infodir}/dir \
+  /sbin/install-info --delete %{_infodir}/gnupg.info %{_infodir}/dir \
     2>/dev/null ||:
 fi
 
@@ -106,8 +108,10 @@ fi
 %files -f %{name}.lang
 %defattr(-,root,root)
 %doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+#docs say to install suid root, but we won't, for now.
 #attr(4755,root,root) %{_bindir}/gpg2
 %{_bindir}/gpg2
+%{_bindir}/gpg-connect-agent
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
 %{_bindir}/gpgsm*
@@ -123,7 +127,20 @@ fi
 %{_infodir}/*
 
 
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
 %changelog
+* Tue May 10 2005 Michael Schwendt <mschwendt[AT]users.sf.net> - 1.9.16-1
+- Merge changes from Rex's 1.9.16-1 (Thu Apr 21):
+-   opensc support unconditional
+-   remove hard-coded .gz from %%post/%%postun
+-   add %%check section
+-   add pth patch
+- Put back patch modified from 1.9.15-4 to make tests verbose
+  and change signal.c to describe received signals better.
+
 * Sun May  8 2005 Michael Schwendt <mschwendt[AT]users.sf.net>
 - Drop patch0 again.
 

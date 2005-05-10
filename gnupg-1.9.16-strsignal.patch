@@ -1,0 +1,20 @@
+diff -Nur gnupg-1.9.16-orig/common/signal.c gnupg-1.9.16/common/signal.c
+--- gnupg-1.9.16-orig/common/signal.c	2004-12-21 11:03:00.000000000 +0100
++++ gnupg-1.9.16/common/signal.c	2005-05-10 07:55:06.000000000 +0200
+@@ -73,12 +73,12 @@
+ static const char *
+ get_signal_name( int signum )
+ {
+-#if defined(SYS_SIGLIST_DECLARED) && defined(NSIG)
+-  return (signum >= 0 && signum < NSIG) ? sys_siglist[signum] : "?";
+-#else
+-  return "some signal";
+-#endif
++  const char* tmp = strsignal(signum);
++  if (tmp)
++    return tmp;
++  else
++    return "some signal";
+ }
+ #endif /*!HAVE_DOSISH_SYSTEM*/
+ 
