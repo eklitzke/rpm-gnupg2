@@ -1,7 +1,7 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.16
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -10,7 +10,7 @@ URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Patch0: gnupg-1.9.16-pth.patch
-Patch1: gnupg-1.9.16-strsignal.patch
+Patch1: gnupg-1.9.16-signal-info.patch
 Patch2: gnupg-1.9.16-testverbose.patch
 
 Obsoletes: newpg < 0.9.5
@@ -132,6 +132,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 13 2005 Michael Schwendt <mschwendt[AT]users.sf.net> - 1.9.16-3
+- Include upstream's patch for signal.c.
+
 * Tue May 10 2005 Michael Schwendt <mschwendt[AT]users.sf.net> - 1.9.16-1
 - Merge changes from Rex's 1.9.16-1 (Thu Apr 21):
 -   opensc support unconditional
