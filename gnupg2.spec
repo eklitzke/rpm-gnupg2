@@ -1,7 +1,12 @@
+# pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
+# Note: this is just the name of the default shared lib to load in scdaemon,
+# it can use other implementations too (including non-pcsc ones).
+%define pcsc_lib libpcsclite.so.0
+
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.16
-Release: 4%{?dist}
+Version: 1.9.17
+Release: 1%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -10,7 +15,7 @@ URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Patch0: gnupg-1.9.16-pth.patch
-Patch1: gnupg-1.9.16-signal-info.patch
+Patch1: gnupg-1.9.17-lvalue.patch
 Patch2: gnupg-1.9.16-testverbose.patch
 
 Obsoletes: newpg < 0.9.5
@@ -28,10 +33,9 @@ BuildRequires: gcc
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
 Requires: libgpg-error >= 1.0
-BuildRequires: libassuan-devel >= 0.6.9
+BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libksba-devel >= 0.9.11
 BuildRequires: opensc-devel >= 0.9
-BuildRequires: pcsc-lite-devel
 BuildRequires: gettext
 BuildRequires: openldap-devel
 BuildRequires: libusb-devel
@@ -64,8 +68,10 @@ the stable gpg version 1.4 (as well as the old 1.2 series).
 %setup -q -n gnupg-%{version}
 
 %patch0 -p1 -b .pth
-%patch1 -p1 -b .strsignal
+%patch1 -p0 -b .lvalue
 %patch2 -p1 -b .testverbose
+
+sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 
 %build
@@ -114,10 +120,10 @@ fi
 %{_bindir}/gpg-connect-agent
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
+%{_bindir}/gpgkey2ssh
 %{_bindir}/gpgsm*
 %{_bindir}/gpgv2
 %{_bindir}/kbxutil
-%{_bindir}/sc-copykeys
 %{_bindir}/scdaemon
 %{_bindir}/watchgnupg
 %{_sbindir}/*
@@ -132,6 +138,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul  1 2005 Ville Skyttä <ville.skytta at iki.fi> - 1.9.17-1
+- 1.9.17, signal info patch applied upstream (#162264).
+- Patch to fix lvalue build error with gcc4 (upstream #485).
+- Patch scdaemon and pcsc-wrapper to load the versioned (non-devel)
+  pcsc-lite lib by default.
+
 * Fri May 13 2005 Michael Schwendt <mschwendt[AT]users.sf.net> - 1.9.16-3
 - Include upstream's patch for signal.c.
 

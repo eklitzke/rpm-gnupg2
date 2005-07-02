@@ -1,0 +1,15 @@
+--- g10/misc.c~	2005-06-15 18:34:29.000000000 +0300
++++ g10/misc.c	2005-07-01 21:02:05.000000000 +0300
+@@ -986,10 +986,10 @@
+     }
+     else {
+ 	int rc;
+-	char *buffer;
++	unsigned char *buffer;
+ 
+ 	rc = gcry_mpi_aprint( GCRYMPI_FMT_HEX,
+-                              &(unsigned char*)buffer, NULL, a );
++                              &buffer, NULL, a );
+ 	assert( !rc );
+ 	fputs( buffer, fp );
+ 	n += strlen(buffer);
