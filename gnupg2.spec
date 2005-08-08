@@ -5,7 +5,7 @@
 
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.17
+Version: 1.9.18
 Release: 1%{?dist}
 License: GPL
 Group:   Applications/System
@@ -14,8 +14,7 @@ Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Patch0: gnupg-1.9.16-pth.patch
-Patch1: gnupg-1.9.17-lvalue.patch
+Patch1: gnupg-1.9.18-lvalue.patch
 Patch2: gnupg-1.9.16-testverbose.patch
 
 Obsoletes: newpg < 0.9.5
@@ -23,19 +22,23 @@ Obsoletes: newpg < 0.9.5
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 
-## gcc version in use?
+# Build with -pie/-fPIE?
 BuildRequires: gcc
-%define gcc_ver %(rpm -q --qf '%%{version}' gcc )
-%if "%{gcc_ver}" >= "3.2.3"
-%define pie 1
+%define gcc_ver %(gcc -dumpversion)
+%if "%{gcc_ver}" < "3.2.3"
+%define _without_pie --without pie 
 %endif
+%{!?_without_pie:%define _with_pie --with pie} 
 
+BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
-Requires: libgpg-error >= 1.0
-BuildRequires: libassuan-devel >= 0.6.10
-BuildRequires: libksba-devel >= 0.9.11
-BuildRequires: opensc-devel >= 0.9
+# We can probably get away without this explicit Requires: now. -- Rex
+#Requires: libgpg-error >= 1.0
+BuildRequires: libksba-devel >= 0.9.12
+# No longer used (?) -- Rex
+#BuildRequires: opensc-devel >= 0.9
+
 BuildRequires: gettext
 BuildRequires: openldap-devel
 BuildRequires: libusb-devel
@@ -52,23 +55,24 @@ Provides: gpg
 Provides: openpgp
 
 %description
-GnuPG 1.9 is the development version of GnuPG; it is based on some old
-GnuPG 1.3 code and the previous NewPG package.  It will eventually
-lead to a GnuPG 2.0 release.  Note that GnuPG 1.4 and 1.9 are not yet
-in sync and thus features and bug fixes done in 1.4 are not available
-in 1.9.  *Please keep on using 1.4.x for OpenPGP*; 1.9.x and 1.4.x may
-be installed simultaneously.
+GnuPG 1.9 is the future version of GnuPG; it is based on some gnupg-1.3
+code and the previous newpg package.  It will eventually lead to a
+GnuPG 2.0 release.  Note that GnuPG 1.4 and 1.9 are not always in sync
+and thus features and bug fixes done in 1.4 are not necessarily
+available in 1.9.
 
-You should use GnuPG 1.9 if you want to use the gpg-agent or gpgsm
-(the S/MIME variant of gpg).  The gpg-agent is also helpful when using
-the stable gpg version 1.4 (as well as the old 1.2 series).
+You should use this GnuPG version if you want to use the gpg-agent or
+gpgsm (the S/MIME variant of gpg).  Note that the gpg-agent is also
+helpful when using the standard gpg versions (1.4.x as well as some of
+the old 1.2.x).  There are no problems installing 1.4 and 1.9
+alongside; in act we suggest to do this.
+
 
 
 %prep
 %setup -q -n gnupg-%{version}
 
-%patch0 -p1 -b .pth
-%patch1 -p0 -b .lvalue
+%patch1 -p1 -b .lvalue
 %patch2 -p1 -b .testverbose
 
 sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
@@ -76,11 +80,11 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 %build
 
-%{?pie:CFLAGS="$RPM_OPT_FLAGS -fPIE" ; export CFLAGS}
-%{?pie:LDFLAGS="$RPM_OPT_FLAGS -pie" ; export LDFLAG}
+%{?_with_pie:CFLAGS="$RPM_OPT_FLAGS -fPIE" ; export CFLAGS}
+%{?_with_pie:LDFLAGS="$RPM_OPT_FLAGS -pie" ; export LDFLAG}
 
 %configure \
-  --program-prefix="%{?_program_prefix}" \
+  --disable-dependency-tracking \
   --disable-rpath \
   --enable-gpg
 
@@ -117,17 +121,17 @@ fi
 #docs say to install suid root, but we won't, for now.
 #attr(4755,root,root) %{_bindir}/gpg2
 %{_bindir}/gpg2
+%{_bindir}/gpgv2
+%{_datadir}/gnupg
 %{_bindir}/gpg-connect-agent
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
 %{_bindir}/gpgkey2ssh
 %{_bindir}/gpgsm*
-%{_bindir}/gpgv2
 %{_bindir}/kbxutil
 %{_bindir}/scdaemon
 %{_bindir}/watchgnupg
 %{_sbindir}/*
-%{_datadir}/gnupg
 %{_libdir}/gnupg
 %{_libexecdir}/*
 %{_infodir}/*
@@ -138,6 +142,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug  8 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-1
+- 1.9.18
+- drop pth patch (--enable-gpg build fixed)
+- update description (from README)
+
 * Fri Jul  1 2005 Ville Skyttä <ville.skytta at iki.fi> - 1.9.17-1
 - 1.9.17, signal info patch applied upstream (#162264).
 - Patch to fix lvalue build error with gcc4 (upstream #485).
