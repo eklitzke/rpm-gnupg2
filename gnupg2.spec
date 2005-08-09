@@ -6,7 +6,7 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.18
-Release: 1%{?dist}
+Release: 5%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -22,12 +22,6 @@ Obsoletes: newpg < 0.9.5
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 
-# Build with -pie/-fPIE?
-BuildRequires: gcc
-%define gcc_ver %(gcc -dumpversion)
-%if "%{gcc_ver}" < "3.2.3"
-%define _without_pie --without pie 
-%endif
 %{!?_without_pie:%define _with_pie --with pie} 
 
 BuildRequires: libassuan-devel >= 0.6.10
@@ -92,7 +86,7 @@ make %{?_smp_mflags}
 
 
 %check || :
-make check
+%{?_with_check:make check}
 
 
 %install
@@ -142,7 +136,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Aug  8 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-1
+* Mon Aug  8 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-5
 - 1.9.18
 - drop pth patch (--enable-gpg build fixed)
 - update description (from README)
