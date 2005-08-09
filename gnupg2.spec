@@ -6,7 +6,7 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.18
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -21,8 +21,6 @@ Obsoletes: newpg < 0.9.5
 
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
-
-%{!?_without_pie:%define _with_pie --with pie} 
 
 BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libgcrypt-devel => 1.2.0
@@ -74,8 +72,8 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 %build
 
-%{?_with_pie:CFLAGS="$RPM_OPT_FLAGS -fPIE" ; export CFLAGS}
-%{?_with_pie:LDFLAGS="$RPM_OPT_FLAGS -pie" ; export LDFLAG}
+%{!?_without_pie:CFLAGS="$RPM_OPT_FLAGS -fPIE" ; export CFLAGS}
+%{!?_without_pie:LDFLAGS="$RPM_OPT_FLAGS -pie" ; export LDFLAG}
 
 %configure \
   --disable-dependency-tracking \
@@ -136,6 +134,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug  9 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-6
+- don't 'make check' by default (regular builds pass, but FC4/5+plague fails)
+
 * Mon Aug  8 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-5
 - 1.9.18
 - drop pth patch (--enable-gpg build fixed)
