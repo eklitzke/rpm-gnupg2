@@ -6,7 +6,7 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.18
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -25,9 +25,9 @@ Requires(postun): /sbin/install-info
 BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
-# We can probably get away without this explicit Requires: now. -- Rex
-#Requires: libgpg-error >= 1.0
-BuildRequires: libksba-devel >= 0.9.12
+# Hard-code libksba-0.9.11 for now
+BuildRequires: libksba-devel = 0.9.11
+#BuildRequires: libksba-devel >= 0.9.11
 # No longer used (?) -- Rex
 #BuildRequires: opensc-devel >= 0.9
 
@@ -84,7 +84,7 @@ make %{?_smp_mflags}
 
 
 %check || :
-%{?_with_check:make check}
+make check
 
 
 %install
@@ -94,16 +94,16 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %find_lang %{name}
 
+## Unpackaged files
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 
 %post
-/sbin/install-info %{_infodir}/gnupg.info %{_infodir}/dir 2>/dev/null ||:
+/sbin/install-info %{_infodir}/gnupg.info %{_infodir}/dir ||:
 
 %preun
 if [ $1 -eq 0 ]; then
-  /sbin/install-info --delete %{_infodir}/gnupg.info %{_infodir}/dir \
-    2>/dev/null ||:
+  /sbin/install-info --delete %{_infodir}/gnupg.info %{_infodir}/dir ||:
 fi
 
 
@@ -134,6 +134,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 26 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-7
+- re-enable 'make check', rebuild against (older) libksba-0.9.11
+
 * Tue Aug  9 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-6
 - don't 'make check' by default (regular builds pass, but FC4/5+plague fails)
 
