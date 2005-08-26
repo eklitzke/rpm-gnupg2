@@ -6,7 +6,7 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.18
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -138,7 +138,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Aug 26 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-8
+* Fri Aug 26 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-9
 - configure: NEED_KSBA_VERSION=0.9.12 -> 0.9.11
 
 * Fri Aug 26 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-7
