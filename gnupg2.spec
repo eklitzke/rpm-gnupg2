@@ -1,3 +1,4 @@
+
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
 # it can use other implementations too (including non-pcsc ones).
@@ -5,8 +6,8 @@
 
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.18
-Release: 9%{?dist}
+Version: 1.9.19
+Release: 1%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -26,10 +27,9 @@ BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
 # Hard-code libksba-0.9.11 for now
-BuildRequires: libksba-devel = 0.9.11
-#BuildRequires: libksba-devel >= 0.9.11
-# No longer used (?) -- Rex
-#BuildRequires: opensc-devel >= 0.9
+#BuildRequires: libksba-devel = 0.9.11
+BuildRequires: libksba-devel >= 0.9.11
+#BuildRequires: libksba-devel >= 0.9.12
 
 BuildRequires: gettext
 BuildRequires: openldap-devel
@@ -138,6 +138,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 11 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.19-1
+- 1.9.19
+
 * Fri Aug 26 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-9
 - configure: NEED_KSBA_VERSION=0.9.12 -> 0.9.11
 
