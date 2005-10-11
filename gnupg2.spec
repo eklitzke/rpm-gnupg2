@@ -7,7 +7,7 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.19
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -27,8 +27,7 @@ BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
 # Hard-code libksba-0.9.11 for now
-#BuildRequires: libksba-devel = 0.9.11
-BuildRequires: libksba-devel >= 0.9.11
+BuildRequires: libksba-devel = 0.9.11
 #BuildRequires: libksba-devel >= 0.9.12
 
 BuildRequires: gettext
@@ -138,6 +137,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 11 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.19-2
+- back to BR: libksba-devel = 1.9.11
+
 * Tue Oct 11 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.19-1
 - 1.9.19
 
