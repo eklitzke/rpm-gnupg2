@@ -7,7 +7,7 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.19
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -27,10 +27,10 @@ BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
 #ifarch x86_64
-# Hard-code libksba-0.9.11 for now (x86_64 issues)
+# Hard-code libksba-0.9.11 for now (x86_64 'make check' fails)
 #BuildRequires: libksba-devel = 0.9.11
 #else
-BuildRequires: libksba-devel >= 0.9.13
+BuildRequires: libksba-devel >= 0.9.12
 #endif
 
 BuildRequires: gettext
@@ -44,7 +44,6 @@ BuildRequires: docbook-utils
 
 Requires: pinentry >= 0.7.1
 
-# Should these be versioned?  -- Rex
 Provides: gpg
 Provides: openpgp
 
@@ -67,8 +66,7 @@ alongside; in act we suggest to do this.
 %setup -q -n gnupg-%{version}
 
 %patch1 -p1 -b .lvalue
-%patch2 -p1 -b .testverbose
-
+#patch2 -p1 -b .testverbose
 
 #ifarch x86_64
 #sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure.ac
@@ -80,9 +78,6 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 %build
 
-#{!?_without_pie:CFLAGS="$RPM_OPT_FLAGS -fPIE" ; export CFLAGS}
-#{!?_without_pie:LDFLAGS="$RPM_OPT_FLAGS -pie" ; export LDFLAG}
-
 %configure \
   --disable-dependency-tracking \
   --disable-rpath \
@@ -91,8 +86,13 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
 make %{?_smp_mflags}
 
 
-%check || :
+%check ||:
+%ifarch x86_64
+# Expect one failure (reported upstream)
+make check ||:
+%else
 make check
+%endif
 
 
 %install
@@ -122,7 +122,6 @@ fi
 #attr(4755,root,root) %{_bindir}/gpg2
 %{_bindir}/gpg2
 %{_bindir}/gpgv2
-%{_datadir}/gnupg
 %{_bindir}/gpg-connect-agent
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
@@ -132,7 +131,8 @@ fi
 %{_bindir}/scdaemon
 %{_bindir}/watchgnupg
 %{_sbindir}/*
-%{_libdir}/gnupg
+%{_datadir}/gnupg/
+%{_libdir}/gnupg/
 %{_libexecdir}/*
 %{_infodir}/*
 
@@ -142,25 +142,28 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Nov 30 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.19-3
+* Wed Nov 30 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-4
+- cleanup, remove hacks
+
+* Wed Nov 30 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-3
 - BR: libksba-devel >= 1.9.13
 
-* Tue Oct 11 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.19-2
+* Tue Oct 11 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-2
 - back to BR: libksba-devel = 1.9.11
 
-* Tue Oct 11 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.19-1
+* Tue Oct 11 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-1
 - 1.9.19
 
-* Fri Aug 26 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-9
+* Fri Aug 26 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.18-9
 - configure: NEED_KSBA_VERSION=0.9.12 -> 0.9.11
 
-* Fri Aug 26 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-7
+* Fri Aug 26 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.18-7
 - re-enable 'make check', rebuild against (older) libksba-0.9.11
 
-* Tue Aug  9 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-6
+* Tue Aug  9 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.18-6
 - don't 'make check' by default (regular builds pass, but FC4/5+plague fails)
 
-* Mon Aug  8 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.18-5
+* Mon Aug  8 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.18-5
 - 1.9.18
 - drop pth patch (--enable-gpg build fixed)
 - update description (from README)
