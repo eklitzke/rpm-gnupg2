@@ -7,7 +7,7 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.19
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -26,9 +26,12 @@ Requires(postun): /sbin/install-info
 BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
-# Hard-code libksba-0.9.11 for now
-BuildRequires: libksba-devel = 0.9.11
-#BuildRequires: libksba-devel >= 0.9.12
+#ifarch x86_64
+# Hard-code libksba-0.9.11 for now (x86_64 issues)
+#BuildRequires: libksba-devel = 0.9.11
+#else
+BuildRequires: libksba-devel >= 0.9.13
+#endif
 
 BuildRequires: gettext
 BuildRequires: openldap-devel
@@ -67,16 +70,18 @@ alongside; in act we suggest to do this.
 %patch2 -p1 -b .testverbose
 
 
-sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure.ac
-sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure
+#ifarch x86_64
+#sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure.ac
+#sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure
+#endif
 
 sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 
 %build
 
-%{!?_without_pie:CFLAGS="$RPM_OPT_FLAGS -fPIE" ; export CFLAGS}
-%{!?_without_pie:LDFLAGS="$RPM_OPT_FLAGS -pie" ; export LDFLAG}
+#{!?_without_pie:CFLAGS="$RPM_OPT_FLAGS -fPIE" ; export CFLAGS}
+#{!?_without_pie:LDFLAGS="$RPM_OPT_FLAGS -pie" ; export LDFLAG}
 
 %configure \
   --disable-dependency-tracking \
@@ -137,6 +142,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov 30 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.19-3
+- BR: libksba-devel >= 1.9.13
+
 * Tue Oct 11 2005 Rex Dieter <rexdieter[AT]users.sf.net> - 1.9.19-2
 - back to BR: libksba-devel = 1.9.11
 
