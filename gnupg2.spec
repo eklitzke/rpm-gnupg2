@@ -7,7 +7,7 @@
 Summary: GNU utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.19
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -92,8 +92,8 @@ make %{?_smp_mflags}
 
 
 %check ||:
-# Allows for better debugability
-echo "debug-allow-core-dumps" >> tests/gpgsm.conf
+# Allows for better debugability (doesn't work, fixme)
+# echo "debug-allow-core-dumps" >> tests/gpgsm.conf
 %ifarch x86_64
 # Expect one failure (reported upstream)
 make check ||:
@@ -157,7 +157,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Dec 01 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-6
+* Thu Dec 01 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-7
 - include gpg-agent-(startup|shutdown) scripts (#136533)
 - BR: libksba-devel >= 1.9.12 
 
