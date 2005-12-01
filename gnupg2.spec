@@ -14,6 +14,12 @@ Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
 Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+# omit broken x86_64 build 
+# ExcludeArch: x86_64 
+
+# enable auto-startup/shutdown of gpg-agent
+Source10: gpg-agent-startup.sh
+Source11: gpg-agent-shutdown.sh
 
 Patch1: gnupg-1.9.18-lvalue.patch
 Patch2: gnupg-1.9.16-testverbose.patch
@@ -26,12 +32,12 @@ Requires(postun): /sbin/install-info
 BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
-#ifarch x86_64
+%ifarch x86_64
 # Hard-code libksba-0.9.11 for now (x86_64 'make check' fails)
-#BuildRequires: libksba-devel = 0.9.11
-#else
+BuildRequires: libksba-devel = 0.9.11
+%else
 BuildRequires: libksba-devel >= 0.9.12
-#endif
+%endif
 
 BuildRequires: gettext
 BuildRequires: openldap-devel
@@ -68,10 +74,9 @@ alongside; in act we suggest to do this.
 %patch1 -p1 -b .lvalue
 #patch2 -p1 -b .testverbose
 
-#ifarch x86_64
-#sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure.ac
-#sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure
-#endif
+%ifarch x86_64
+sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure.ac configure
+%endif
 
 sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
@@ -87,6 +92,8 @@ make %{?_smp_mflags}
 
 
 %check ||:
+# Allows for better debugability
+echo "--debug-allow-core-dumps" >> tests/gpgsm.conf
 %ifarch x86_64
 # Expect one failure (reported upstream)
 make check ||:
@@ -99,6 +106,11 @@ make check
 rm -rf $RPM_BUILD_ROOT
 
 make install DESTDIR=$RPM_BUILD_ROOT
+
+# enable auto-startup/shutdown of gpg-agent 
+mkdir -p $RPM_BUILD_ROOT%{_prefix}/{env,shutdown}
+install -p -m0755 %{SOURCE10} $RPM_BUILD_ROOT%{_prefix}/env/
+install -p -m0755 %{SOURCE11} $RPM_BUILD_ROOT%{_prefix}/shutdown/
 
 %find_lang %{name}
 
@@ -135,6 +147,9 @@ fi
 %{_libdir}/gnupg/
 %{_libexecdir}/*
 %{_infodir}/*
+# Own dirs until someone else does (filesystem,kdebase?)
+%{_prefix}/env/
+%{_prefix}/shutdown/
 
 
 %clean
@@ -142,8 +157,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Nov 30 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-4
-- cleanup, remove hacks
+* Thu Dec 01 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-4
+- include gpg-agent-(startup|shutdown) scripts (#136533)
+- BR: libksba-devel >= 1.9.12 
 
 * Wed Nov 30 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-3
 - BR: libksba-devel >= 1.9.13
