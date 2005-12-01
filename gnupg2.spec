@@ -32,12 +32,12 @@ Requires(postun): /sbin/install-info
 BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
-%ifarch x86_64
+#ifarch x86_64
 # Hard-code libksba-0.9.11 for now (x86_64 'make check' fails)
-BuildRequires: libksba-devel = 0.9.11
-%else
+#BuildRequires: libksba-devel = 0.9.11
+#else
 BuildRequires: libksba-devel >= 0.9.12
-%endif
+#endif
 
 BuildRequires: gettext
 BuildRequires: openldap-devel
@@ -72,7 +72,7 @@ alongside; in act we suggest to do this.
 %setup -q -n gnupg-%{version}
 
 %patch1 -p1 -b .lvalue
-#patch2 -p1 -b .testverbose
+%patch2 -p1 -b .testverbose
 
 %ifarch x86_64
 sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure.ac configure
@@ -157,7 +157,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Dec 01 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-4
+* Thu Dec 01 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-5
 - include gpg-agent-(startup|shutdown) scripts (#136533)
 - BR: libksba-devel >= 1.9.12 
 
