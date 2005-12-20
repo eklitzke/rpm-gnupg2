@@ -4,10 +4,11 @@
 # it can use other implementations too (including non-pcsc ones).
 %define pcsc_lib libpcsclite.so.0
 
-Summary: GNU utility for secure communication and data storage
+Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.19
-Release: 8%{?dist}
+Version: 1.9.20
+Release: 1%{?dist}
+
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
@@ -36,7 +37,7 @@ BuildRequires: libgpg-error-devel => 1.0
 # Hard-code libksba-0.9.11 for now (x86_64 'make check' fails)
 #BuildRequires: libksba-devel = 0.9.11
 #else
-BuildRequires: libksba-devel >= 0.9.12
+BuildRequires: libksba-devel >= 0.9.13
 #endif
 
 BuildRequires: gettext
@@ -74,9 +75,9 @@ alongside; in act we suggest to do this.
 %patch1 -p1 -b .lvalue
 %patch2 -p1 -b .testverbose
 
-%ifarch x86_64
-sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure.ac configure
-%endif
+#ifarch x86_64
+#sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure.ac configure
+#endif
 
 sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
@@ -84,9 +85,9 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
 %build
 
 %configure \
-  --disable-dependency-tracking \
   --disable-rpath \
-  --enable-gpg
+  --disable-dependency-tracking \
+  --enable-gpg 
 
 make %{?_smp_mflags}
 
@@ -95,7 +96,7 @@ make %{?_smp_mflags}
 ## Allows for better debugability (doesn't work, fixme)
 # echo "debug-allow-core-dumps" >> tests/gpgsm.conf
 # (sometimes?) expect one failure (reported upstream)
-#make check ||:
+make check ||:
 
 
 %install
@@ -104,6 +105,7 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 # enable auto-startup/shutdown of gpg-agent 
+# Keep an eye on http://bugzilla.redhat.com/bugzilla/175744, in case these dirs go away or change
 mkdir -p $RPM_BUILD_ROOT%{_prefix}/{env,shutdown}
 install -p -m0755 %{SOURCE10} $RPM_BUILD_ROOT%{_prefix}/env/
 install -p -m0755 %{SOURCE11} $RPM_BUILD_ROOT%{_prefix}/shutdown/
@@ -124,7 +126,7 @@ fi
 
 
 %files -f %{name}.lang
-%defattr(-,root,root)
+%defattr(-,root,root,-)
 %doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
 #docs say to install suid root, but we won't, for now.
 #attr(4755,root,root) %{_bindir}/gpg2
@@ -134,6 +136,7 @@ fi
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
 %{_bindir}/gpgkey2ssh
+%{_bindir}/gpgparsemail
 %{_bindir}/gpgsm*
 %{_bindir}/kbxutil
 %{_bindir}/scdaemon
@@ -153,6 +156,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 20 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.20-1
+- 1.9.20
+
 * Thu Dec 01 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.19-8
 - include gpg-agent-(startup|shutdown) scripts (#136533)
 - BR: libksba-devel >= 1.9.12 
