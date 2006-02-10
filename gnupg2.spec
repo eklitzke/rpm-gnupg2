@@ -7,7 +7,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.20
-Release: 1%{?dist}
+Release: 1%{?dist}.1
 
 License: GPL
 Group:   Applications/System
@@ -156,6 +156,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 10 2006 Rex Dieter <rexdieter[AT]users.sf.net>
+- fc5: gcc/glibc respin
+
 * Tue Dec 20 2005 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.20-1
 - 1.9.20
 
