@@ -4,10 +4,19 @@
 # it can use other implementations too (including non-pcsc ones).
 %define pcsc_lib libpcsclite.so.0
 
+
+# Keep an eye on http://bugzilla.redhat.com/bugzilla/175744, in case these dirs go away or change
+%if "%{?fedora}" > "4"
+%define kde_scriptdir %{_sysconfdir}/kde
+%else
+%define kde_scriptdir %{_prefix}
+%define own_scriptdir 1
+%endif
+
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.20
-Release: 1%{?dist}.1
+Release: 2%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -105,10 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 # enable auto-startup/shutdown of gpg-agent 
-# Keep an eye on http://bugzilla.redhat.com/bugzilla/175744, in case these dirs go away or change
-mkdir -p $RPM_BUILD_ROOT%{_prefix}/{env,shutdown}
-install -p -m0755 %{SOURCE10} $RPM_BUILD_ROOT%{_prefix}/env/
-install -p -m0755 %{SOURCE11} $RPM_BUILD_ROOT%{_prefix}/shutdown/
+mkdir -p $RPM_BUILD_ROOT%{kde_scriptdir}/{env,shutdown}
+install -p -m0755 %{SOURCE10} $RPM_BUILD_ROOT%{kde_scriptdir}/env/
+install -p -m0755 %{SOURCE11} $RPM_BUILD_ROOT%{kde_scriptdir}/shutdown/
 
 %find_lang %{name}
 
@@ -146,9 +154,13 @@ fi
 %{_libdir}/gnupg/
 %{_libexecdir}/*
 %{_infodir}/*
-# Own dirs until someone else does (filesystem,kdebase?)
-%{_prefix}/env/
-%{_prefix}/shutdown/
+%if "%{?own_scriptdir}" == "1"
+%{kde_scriptdir}/env/
+%{kde_scriptdir}/shutdown/
+%else
+%{kde_scriptdir}/env/*.sh
+%{kde_scriptdir}/shutdown/*.sh
+%endif
 
 
 %clean
@@ -156,6 +168,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 16 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.20-2
+- fc5+: use /etc/kde/(env|shutdown) for scripts (#175744)
+
 * Fri Feb 10 2006 Rex Dieter <rexdieter[AT]users.sf.net>
 - fc5: gcc/glibc respin
 
