@@ -1,22 +1,11 @@
 
-# pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
-# Note: this is just the name of the default shared lib to load in scdaemon,
-# it can use other implementations too (including non-pcsc ones).
-%define pcsc_lib libpcsclite.so.0
-
-
 # Keep an eye on http://bugzilla.redhat.com/bugzilla/175744, in case these dirs go away or change
-%if "%{?fedora}" > "4"
 %define kde_scriptdir %{_sysconfdir}/kde
-%else
-%define kde_scriptdir %{_prefix}
-%define own_scriptdir 1
-%endif
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.20
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -57,6 +46,9 @@ BuildRequires: zlib-devel
 BuildRequires: bzip2-devel
 Buildrequires: libusb-devel
 BuildRequires: docbook-utils
+%if "%{?fedora}" > "3"
+BuildRequires: pcsc-lite-libs
+%endif
 
 Requires: pinentry >= 0.7.1
 
@@ -88,7 +80,16 @@ alongside; in act we suggest to do this.
 #sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure.ac configure
 #endif
 
-sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
+# pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
+# Note: this is just the name of the default shared lib to load in scdaemon,
+# it can use other implementations too (including non-pcsc ones).
+%if "%{?fedora}" > "3"
+%global pcsclib %(basename $(ls -1 %{_libdir}/libpcsclite.so.?))
+%else
+%define pcsclib libpcsclite.so.0
+%endif
+
+sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 
 %build
@@ -99,7 +100,6 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsc_lib}"/' scd/{scdaemon,pcsc-wrapper}.c
   --enable-gpg 
 
 make %{?_smp_mflags}
-
 
 %check ||:
 ## Allows for better debugability (doesn't work, fixme)
@@ -154,13 +154,8 @@ fi
 %{_libdir}/gnupg/
 %{_libexecdir}/*
 %{_infodir}/*
-%if "%{?own_scriptdir}" == "1"
-%{kde_scriptdir}/env/
-%{kde_scriptdir}/shutdown/
-%else
 %{kde_scriptdir}/env/*.sh
 %{kde_scriptdir}/shutdown/*.sh
-%endif
 
 
 %clean
@@ -168,8 +163,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar  6 2006 Ville Skyttä <ville.skytta at iki.fi>> 1.9.20-3
+- Don't hardcode pcsc-lite lib name.
+
 * Thu Feb 16 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.20-2
-- fc5+: use /etc/kde/(env|shutdown) for scripts (#175744)
+- use /etc/kde/(env|shutdown) for scripts (#175744)
 
 * Fri Feb 10 2006 Rex Dieter <rexdieter[AT]users.sf.net>
 - fc5: gcc/glibc respin
