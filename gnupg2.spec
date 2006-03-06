@@ -84,7 +84,7 @@ alongside; in act we suggest to do this.
 # Note: this is just the name of the default shared lib to load in scdaemon,
 # it can use other implementations too (including non-pcsc ones).
 %if "%{?fedora}" > "3"
-%global pcsclib %(basename $(ls -1 %{_libdir}/libpcsclite.so.?))
+%global pcsclib %(basename $(ls -1 %{_libdir}/libpcsclite.so.? 2>/dev/null ) 2>/dev/null )
 %else
 %define pcsclib libpcsclite.so.0
 %endif
