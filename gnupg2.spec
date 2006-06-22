@@ -1,6 +1,10 @@
 
 # Keep an eye on http://bugzilla.redhat.com/bugzilla/175744, in case these dirs go away or change
+%if "%{?fedora}" > "3"
 %define kde_scriptdir %{_sysconfdir}/kde
+%else
+%define kde_scriptdir %{_prefix}
+%endif
 
 # define _enable_gpg to build/include gnupg2 binary, currently disabled because:
 # * currently doesn't build
@@ -174,7 +178,7 @@ rm -rf $RPM_BUILD_ROOT
 - Don't hardcode pcsc-lite lib name (#184123)
 
 * Thu Feb 16 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.20-2
-- use /etc/kde/(env|shutdown) for scripts (#175744)
+- fc4+: use /etc/kde/(env|shutdown) for scripts (#175744)
 
 * Fri Feb 10 2006 Rex Dieter <rexdieter[AT]users.sf.net>
 - fc5: gcc/glibc respin
