@@ -1,5 +1,4 @@
 #!/bin/sh
-# $Id: gpg-agent-shutdown.sh,v 1.3 2004/12/09 14:27:31 rexdieter Exp $
 
 ## The nice way
 if test -n "${GPG_AGENT_INFO}"; then
