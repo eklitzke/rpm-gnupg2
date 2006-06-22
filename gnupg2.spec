@@ -12,7 +12,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.21
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -163,6 +163,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 22 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.21-3
+- fix "gpg-agent not restarted after kde session crash/killed (#196327)
+
 * Thu Jun 22 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.21-2
 - 1.9.21
 - omit gpg2 binary to address CVS-2006-3082 (#196190)
