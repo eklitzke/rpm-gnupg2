@@ -2,10 +2,17 @@
 # Keep an eye on http://bugzilla.redhat.com/bugzilla/175744, in case these dirs go away or change
 %define kde_scriptdir %{_sysconfdir}/kde
 
+# define _enable_gpg to build/include gnupg2 binary, currently disabled because:
+# * currently doesn't build
+# * has security issue (CVE-2006-3082)
+# * upstream devs say "You shall not build the gpg part.  There is a reason why it is not
+#   enabled by default"
+#define _enable_gpg --enable-gpg
+
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.20
-Release: 3%{?dist}
+Version: 1.9.21
+Release: 1%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -20,7 +27,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source10: gpg-agent-startup.sh
 Source11: gpg-agent-shutdown.sh
 
-Patch1: gnupg-1.9.18-lvalue.patch
 Patch2: gnupg-1.9.16-testverbose.patch
 
 Obsoletes: newpg < 0.9.5
@@ -31,12 +37,7 @@ Requires(postun): /sbin/install-info
 BuildRequires: libassuan-devel >= 0.6.10
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.0
-#ifarch x86_64
-# Hard-code libksba-0.9.11 for now (x86_64 'make check' fails)
-#BuildRequires: libksba-devel = 0.9.11
-#else
-BuildRequires: libksba-devel >= 0.9.13
-#endif
+BuildRequires: libksba-devel >= 0.9.15
 
 BuildRequires: gettext
 BuildRequires: openldap-devel
@@ -52,8 +53,10 @@ BuildRequires: pcsc-lite-libs
 
 Requires: pinentry >= 0.7.1
 
+%if "%{?_enable_gpg:1}" == "1"
 Provides: gpg
 Provides: openpgp
+%endif
 
 %description
 GnuPG 1.9 is the future version of GnuPG; it is based on some gnupg-1.3
@@ -73,12 +76,7 @@ alongside; in act we suggest to do this.
 %prep
 %setup -q -n gnupg-%{version}
 
-%patch1 -p1 -b .lvalue
 %patch2 -p1 -b .testverbose
-
-#ifarch x86_64
-#sed -i -e 's|^NEED_KSBA_VERSION=.*|NEED_KSBA_VERSION=0.9.11|' configure.ac configure
-#endif
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -97,7 +95,7 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 %configure \
   --disable-rpath \
   --disable-dependency-tracking \
-  --enable-gpg 
+  %{?_enable_gpg}
 
 make %{?_smp_mflags}
 
@@ -136,10 +134,12 @@ fi
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%if "%{?_enable_gpg:1}" == "1"
 #docs say to install suid root, but we won't, for now.
 #attr(4755,root,root) %{_bindir}/gpg2
 %{_bindir}/gpg2
 %{_bindir}/gpgv2
+%endif
 %{_bindir}/gpg-connect-agent
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
@@ -163,8 +163,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 22 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.21-1
+- 1.9.21
+- omit gpg2 binary to address CVS-2006-3082 (#196190)
+
 * Mon Mar  6 2006 Ville Skyttä <ville.skytta at iki.fi>> 1.9.20-3
-- Don't hardcode pcsc-lite lib name.
+- Don't hardcode pcsc-lite lib name (#184123)
 
 * Thu Feb 16 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.20-2
 - use /etc/kde/(env|shutdown) for scripts (#175744)
