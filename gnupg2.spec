@@ -15,13 +15,16 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.21
-Release: 3%{?dist}
+Version: 1.9.22
+Release: 1%{?dist}
 
 License: GPL
 Group:   Applications/System
-Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
-Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
+#Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
+#Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
+#use mirror(s), since the primary site hardly ever works anymore
+Source0: http://mirrors.rootmode.com/ftp.gnupg.org/alpha/gnupg/gnupg-%{version}.tar.bz2
+Source1: http://mirrors.rootmode.com/ftp.gnupg.org/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 # omit broken x86_64 build 
@@ -167,6 +170,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 28 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-1
+- 1.9.22
+
 * Thu Jun 22 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.21-3
 - fix "gpg-agent not restarted after kde session crash/killed (#196327)
 
