@@ -1,5 +1,5 @@
 
-# Keep an eye on http://bugzilla.redhat.com/bugzilla/175744, in case these dirs go away or change
+# Keep an eye on http://bugzilla.redhat.com/175744, in case these dirs go away or change
 %if "%{?fedora}" > "3"
 %define kde_scriptdir %{_sysconfdir}/kde
 %else
@@ -16,7 +16,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.22
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -170,6 +170,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 29 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-2
+- fc6 respin
+
 * Fri Jul 28 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-1
 - 1.9.22
 
