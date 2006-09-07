@@ -1,6 +1,6 @@
 
 # Keep an eye on http://bugzilla.redhat.com/175744, in case these dirs go away or change
-%if "%{?fedora}" > "3"
+%if "%{?fedora}" > "3" || "%{?rhel}" > "4"
 %define kde_scriptdir %{_sysconfdir}/kde
 %else
 %define kde_scriptdir %{_prefix}
@@ -16,7 +16,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.22
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -170,6 +170,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Sep 07 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-3
+- fc6 respin (for libksba-1.0)
+
 * Tue Aug 29 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-2
 - fc6 respin
 
