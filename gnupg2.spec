@@ -16,7 +16,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.22
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -58,6 +58,8 @@ BuildRequires: docbook-utils
 BuildRequires: pcsc-lite-libs
 %endif
 
+# sed/kill used in gpg-agent-(startup/shutdown).sh
+Requires: fileutils util-linux
 Requires: pinentry >= 0.7.1
 
 %if "%{?_enable_gpg:1}" == "1"
@@ -170,7 +172,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Sep 18 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-5
+* Mon Sep 18 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-7
+- gpg-agent-startup.sh: fix case where valid .gpg-agent-info exists
+
+* Mon Sep 18 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-6
 - fix "syntax error in gpg-agent-startup.sh" (#206887)
 
 * Thu Sep 07 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-3
