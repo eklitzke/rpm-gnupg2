@@ -16,7 +16,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.22
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -170,6 +170,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Sep 18 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-4
+- fix "syntax error in gpg-agent-startup.sh" (#206887)
+
 * Thu Sep 07 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-3
 - fc6 respin (for libksba-1.0)
 
