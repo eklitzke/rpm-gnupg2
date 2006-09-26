@@ -6,29 +6,23 @@
 %define kde_scriptdir %{_prefix}
 %endif
 
-# define _enable_gpg to build/include gnupg2 binary, currently disabled because:
-# * currently doesn't build
-# * has security issue (CVE-2006-3082)
-# * upstream devs say "You shall not build the gpg part.  There is a reason why it is not
-#   enabled by default"
-#define _enable_gpg --enable-gpg
+# define to build/include gpg2 binary
+%define _enable_gpg --enable-gpg
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.22
-Release: 6%{?dist}
+Version: 1.9.23
+Release: 1%{?dist}
 
 License: GPL
 Group:   Applications/System
-#Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
-#Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
+Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
+Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
 #use mirror(s), since the primary site hardly ever works anymore
-Source0: http://mirrors.rootmode.com/ftp.gnupg.org/alpha/gnupg/gnupg-%{version}.tar.bz2
-Source1: http://mirrors.rootmode.com/ftp.gnupg.org/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
+#Source0: http://mirrors.rootmode.com/ftp.gnupg.org/alpha/gnupg/gnupg-%{version}.tar.bz2
+#Source1: http://mirrors.rootmode.com/ftp.gnupg.org/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-# omit broken x86_64 build 
-# ExcludeArch: x86_64 
 
 # enable auto-startup/shutdown of gpg-agent
 Source10: gpg-agent-startup.sh
@@ -41,10 +35,10 @@ Obsoletes: newpg < 0.9.5
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 
-BuildRequires: libassuan-devel >= 0.6.10
+BuildRequires: libassuan-devel >= 0.9.0
 BuildRequires: libgcrypt-devel => 1.2.0
-BuildRequires: libgpg-error-devel => 1.0
-BuildRequires: libksba-devel >= 0.9.15
+BuildRequires: libgpg-error-devel => 1.4
+BuildRequires: libksba-devel >= 1.0.0
 
 BuildRequires: gettext
 BuildRequires: openldap-devel
@@ -107,6 +101,7 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
   %{?_enable_gpg}
 
 make %{?_smp_mflags}
+
 
 %check ||:
 ## Allows for better debugability (doesn't work, fixme)
@@ -172,6 +167,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Sep 18 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.23-1
+- 1.9.23
+
 * Mon Sep 18 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-7
 - gpg-agent-startup.sh: fix case where valid .gpg-agent-info exists
 
