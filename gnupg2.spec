@@ -11,16 +11,13 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.23
-Release: 1%{?dist}
+Version: 1.9.22
+Release: 8%{?dist}
 
 License: GPL
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
 Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
-#use mirror(s), since the primary site hardly ever works anymore
-#Source0: http://mirrors.rootmode.com/ftp.gnupg.org/alpha/gnupg/gnupg-%{version}.tar.bz2
-#Source1: http://mirrors.rootmode.com/ftp.gnupg.org/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -41,6 +38,7 @@ BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.0
 
 BuildRequires: gettext
+BuildRequires: readline-devel ncurses-devel
 BuildRequires: openldap-devel
 BuildRequires: libusb-devel
 BuildRequires: pth-devel
@@ -100,7 +98,8 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
   --disable-dependency-tracking \
   %{?_enable_gpg}
 
-make %{?_smp_mflags}
+# not smp-safe
+make 
 
 
 %check ||:
@@ -167,8 +166,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 04 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-8
+- respin
+
+* Tue Sep 26 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.90-1
+- 1.9.90 (doesn't build, not released)
+
 * Mon Sep 18 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.23-1
-- 1.9.23
+- 1.9.23 (doesn't build, not released)
 
 * Mon Sep 18 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-7
 - gpg-agent-startup.sh: fix case where valid .gpg-agent-info exists
