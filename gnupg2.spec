@@ -11,8 +11,8 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.22
-Release: 8%{?dist}
+Version: 1.9.91
+Release: 1%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -25,6 +25,8 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source10: gpg-agent-startup.sh
 Source11: gpg-agent-shutdown.sh
 
+# http://lists.gnupg.org/pipermail/gnupg-devel/2006-October/023237.html
+Patch1: gnupg-1.9.91-readline.patch
 Patch2: gnupg-1.9.16-testverbose.patch
 
 Obsoletes: newpg < 0.9.5
@@ -32,7 +34,7 @@ Obsoletes: newpg < 0.9.5
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 
-BuildRequires: libassuan-devel >= 0.9.0
+BuildRequires: libassuan-devel >= 0.9.2
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.0
@@ -77,6 +79,7 @@ alongside; in act we suggest to do this.
 %prep
 %setup -q -n gnupg-%{version}
 
+%patch1 -p1 -b .readline
 %patch2 -p1 -b .testverbose
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
@@ -149,6 +152,8 @@ fi
 %{_bindir}/gpgkey2ssh
 %{_bindir}/gpgparsemail
 %{_bindir}/gpgsm*
+%{_bindir}/gpgsplit
+%{_bindir}/gpg-zip
 %{_bindir}/kbxutil
 %{_bindir}/scdaemon
 %{_bindir}/watchgnupg
@@ -157,6 +162,7 @@ fi
 %{_libdir}/gnupg/
 %{_libexecdir}/*
 %{_infodir}/*
+%{_mandir}/man?/*
 %{kde_scriptdir}/env/*.sh
 %{kde_scriptdir}/shutdown/*.sh
 
@@ -166,6 +172,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct 05 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.91-1
+- 1.9.91
+
 * Wed Oct 04 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.22-8
 - respin
 
