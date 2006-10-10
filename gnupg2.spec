@@ -12,7 +12,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.91
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -28,13 +28,14 @@ Source11: gpg-agent-shutdown.sh
 # http://lists.gnupg.org/pipermail/gnupg-devel/2006-October/023237.html
 Patch1: gnupg-1.9.91-readline.patch
 Patch2: gnupg-1.9.16-testverbose.patch
+Patch3: gnupg-1.9.91-dearmor.patch
 
 Obsoletes: newpg < 0.9.5
 
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 
-BuildRequires: libassuan-devel >= 0.9.2
+BuildRequires: libassuan-devel >= 0.9.3
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.0
@@ -81,6 +82,7 @@ alongside; in act we suggest to do this.
 
 %patch1 -p1 -b .readline
 %patch2 -p1 -b .testverbose
+%patch3 -p1 -b .dearmor
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -98,8 +100,11 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 %configure \
   --disable-rpath \
-  --disable-dependency-tracking \
-  %{?_enable_gpg}
+  --enable-selinux-support \
+  %{?_enable_gpg} \
+%ifarch x86_64
+  --disable-optimization 
+%endif
 
 # not smp-safe
 make 
@@ -109,7 +114,7 @@ make
 ## Allows for better debugability (doesn't work, fixme)
 # echo "debug-allow-core-dumps" >> tests/gpgsm.conf
 # (sometimes?) expect one failure (reported upstream)
-make check ||:
+make -k check
 
 
 %install
@@ -172,6 +177,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 10 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.91-2
+- --enable-selinux-support
+- x86_64: --disable-optimization (to avoid gpg2 segfaults), for now
+
 * Thu Oct 05 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.91-1
 - 1.9.91
 
