@@ -1,0 +1,22 @@
+--- gnupg-1.9.91/tests/openpgp/Makefile.am.dearmor	2006-09-27 09:09:43.000000000 -0500
++++ gnupg-1.9.91/tests/openpgp/Makefile.am	2006-10-10 13:24:13.000000000 -0500
+@@ -63,7 +63,7 @@
+ 
+ ./gpg_dearmor:
+ 	echo '#!/bin/sh' >./gpg_dearmor
+-	echo "../../g10/gpg2 --no-options --no-greeting \
++	echo "../../g10/gpg2 --homedir . --no-options --no-greeting \
+              --no-secmem-warning --batch --dearmor" >>./gpg_dearmor
+ 	chmod 755 ./gpg_dearmor
+ 
+--- gnupg-1.9.91/tests/openpgp/Makefile.in.dearmor	2006-10-04 11:54:18.000000000 -0500
++++ gnupg-1.9.91/tests/openpgp/Makefile.in	2006-10-10 13:24:23.000000000 -0500
+@@ -580,7 +580,7 @@
+ 
+ ./gpg_dearmor:
+ 	echo '#!/bin/sh' >./gpg_dearmor
+-	echo "../../g10/gpg2 --no-options --no-greeting \
++	echo "../../g10/gpg2 --homedir . --no-options --no-greeting \
+              --no-secmem-warning --batch --dearmor" >>./gpg_dearmor
+ 	chmod 755 ./gpg_dearmor
+ 

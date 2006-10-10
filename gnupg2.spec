@@ -12,7 +12,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.91
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -177,7 +177,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue Oct 10 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.91-2
+* Tue Oct 10 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.91-3
 - --enable-selinux-support
 - x86_64: --disable-optimization (to avoid gpg2 segfaults), for now
 
