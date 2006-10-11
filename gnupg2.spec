@@ -12,7 +12,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.92
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -95,6 +95,10 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 %build
 
+%ifarch x86_64
+#export CFLAGS="%(echo %{optflags} | sed -e 's|-O2|-O1|')"
+%endif
+
 %configure \
   --disable-rpath \
   --enable-selinux-support \
@@ -126,6 +130,15 @@ install -p -m0755 %{SOURCE11} $RPM_BUILD_ROOT%{kde_scriptdir}/shutdown/
 
 %find_lang %{name}
 
+## NOTE:
+#file /usr/bin/gpg-zip from install of gnupg2-1.9.92-1.fc6 conflicts with file from package gnupg-1.4.5-4
+#file /usr/bin/gpgsplit from install of gnupg2-1.9.92-1.fc6 conflicts with file from package gnupg-1.4.5-4
+#file /usr/share/man/man7/gnupg.7.gz from install of gnupg2-1.9.92-1.fc6 conflicts with file from package gnupg-1.4.5-4
+
+rm -f $RPM_BUILD_ROOT%{_bindir}/{gpgsplit,gpg-zip} 
+mv $RPM_BUILD_ROOT%{_mandir}/man7/gnupg.7 $RPM_BUILD_ROOT%{_mandir}/man7/gnupg2.7 ||:
+
+
 ## Unpackaged files
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
@@ -137,7 +150,6 @@ rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 if [ $1 -eq 0 ]; then
   /sbin/install-info --delete %{_infodir}/gnupg.info %{_infodir}/dir ||:
 fi
-
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
@@ -154,8 +166,8 @@ fi
 %{_bindir}/gpgkey2ssh
 %{_bindir}/gpgparsemail
 %{_bindir}/gpgsm*
-%{_bindir}/gpgsplit
-%{_bindir}/gpg-zip
+#{_bindir}/gpgsplit
+#{_bindir}/gpg-zip
 %{_bindir}/kbxutil
 %{_bindir}/scdaemon
 %{_bindir}/watchgnupg
@@ -168,12 +180,14 @@ fi
 %{kde_scriptdir}/env/*.sh
 %{kde_scriptdir}/shutdown/*.sh
 
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 11 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.92-2
+- fix file conflicts with gnupg
+
 * Wed Oct 11 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.92-1
 - 1.9.92
 
