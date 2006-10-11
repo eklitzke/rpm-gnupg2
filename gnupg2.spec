@@ -11,8 +11,8 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.91
-Release: 4%{?dist}
+Version: 1.9.92
+Release: 1%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -25,8 +25,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source10: gpg-agent-startup.sh
 Source11: gpg-agent-shutdown.sh
 
-# http://lists.gnupg.org/pipermail/gnupg-devel/2006-October/023237.html
-Patch1: gnupg-1.9.91-readline.patch
 Patch2: gnupg-1.9.16-testverbose.patch
 Patch3: gnupg-1.9.91-dearmor.patch
 
@@ -80,8 +78,7 @@ alongside; in act we suggest to do this.
 %prep
 %setup -q -n gnupg-%{version}
 
-%patch1 -p1 -b .readline
-%patch2 -p1 -b .testverbose
+#patch2 -p1 -b .testverbose
 %patch3 -p1 -b .dearmor
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
@@ -177,6 +174,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 11 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.92-1
+- 1.9.92
+
 * Tue Oct 10 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.91-4
 - make check ||: (apparently checks return err even on success?)
 
