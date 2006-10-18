@@ -11,8 +11,8 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.92
-Release: 2%{?dist}
+Version: 1.9.93
+Release: 1%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -111,10 +111,8 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 make 
 
 
-%check ||:
-## Allows for better debugability (doesn't work, fixme)
-# echo "debug-allow-core-dumps" >> tests/gpgsm.conf
-# (sometimes?) expect one failure (reported upstream)
+%check
+# some gpg2 tests (still) FAIL
 make -k check ||:
 
 
@@ -134,7 +132,6 @@ install -p -m0755 %{SOURCE11} $RPM_BUILD_ROOT%{kde_scriptdir}/shutdown/
 #file /usr/bin/gpg-zip from install of gnupg2-1.9.92-1.fc6 conflicts with file from package gnupg-1.4.5-4
 #file /usr/bin/gpgsplit from install of gnupg2-1.9.92-1.fc6 conflicts with file from package gnupg-1.4.5-4
 #file /usr/share/man/man7/gnupg.7.gz from install of gnupg2-1.9.92-1.fc6 conflicts with file from package gnupg-1.4.5-4
-
 rm -f $RPM_BUILD_ROOT%{_bindir}/{gpgsplit,gpg-zip} 
 mv $RPM_BUILD_ROOT%{_mandir}/man7/gnupg.7 $RPM_BUILD_ROOT%{_mandir}/man7/gnupg2.7 ||:
 
@@ -185,6 +182,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 18 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.93-1
+- 1.9.93
+
 * Wed Oct 11 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.92-2
 - fix file conflicts with gnupg
 
