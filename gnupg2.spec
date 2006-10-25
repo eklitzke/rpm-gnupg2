@@ -11,7 +11,7 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.93
+Version: 1.9.94
 Release: 1%{?dist}
 
 License: GPL
@@ -95,8 +95,9 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 %build
 
+# see --disable-optimization below
 %ifarch x86_64
-#export CFLAGS="%(echo %{optflags} | sed -e 's|-O2|-O1|')"
+#export CFLAGS="%(echo %{optflags} | sed -e 's|-O2|-O0|')"
 %endif
 
 %configure \
@@ -182,6 +183,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 25 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.94-1
+
 * Wed Oct 18 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.93-1
 - 1.9.93
 
