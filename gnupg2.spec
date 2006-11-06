@@ -13,7 +13,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 1.9.95
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPL
 Group:   Applications/System
