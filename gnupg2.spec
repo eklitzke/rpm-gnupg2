@@ -130,15 +130,12 @@ install -p -m0755 %{SOURCE11} $RPM_BUILD_ROOT%{kde_scriptdir}/shutdown/
 
 %find_lang %{name}
 
-## NOTE:
-#file /usr/bin/gpg-zip from install of gnupg2-1.9.92-1.fc6 conflicts with file from package gnupg-1.4.5-4
-#file /usr/bin/gpgsplit from install of gnupg2-1.9.92-1.fc6 conflicts with file from package gnupg-1.4.5-4
-#file /usr/share/man/man7/gnupg.7.gz from install of gnupg2-1.9.92-1.fc6 conflicts with file from package gnupg-1.4.5-4
+# file conflicts with gnupg-1.x 
 rm -f $RPM_BUILD_ROOT%{_bindir}/{gpgsplit,gpg-zip} 
+rm -f $RPM_BUILD_ROOT%{_datadir}/gnupg/{FAQ,faq.html}
 mv $RPM_BUILD_ROOT%{_mandir}/man7/gnupg.7 $RPM_BUILD_ROOT%{_mandir}/man7/gnupg2.7 ||:
 
-
-## Unpackaged files
+# Unpackaged files
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 
@@ -184,6 +181,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 06 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.95-2
+- fix (more) file conflicts with gnupg
+
 * Mon Nov 06 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.95-1
 - 1.9.95
 
