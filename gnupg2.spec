@@ -10,7 +10,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -33,7 +33,7 @@ Obsoletes: newpg < 0.9.5
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 
-BuildRequires: libassuan-devel >= 0.9.3
+BuildRequires: libassuan-static >= 1.0.0 
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.0
@@ -173,6 +173,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 13 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.0-3
+- BR: libassuan-static >= 1.0.0
+
 * Mon Nov 13 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.0-2
 - 2.0.0
 
