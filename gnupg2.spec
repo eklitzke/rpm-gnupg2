@@ -7,18 +7,15 @@
 %define kde_scriptdir %{_prefix}
 %endif
 
-# define to build/include gpg2 binary
-%define _enable_gpg --enable-gpg
-
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 1.9.95
-Release: 2%{?dist}
+Version: 2.0.0
+Release: 1%{?dist}
 
 License: GPL
 Group:   Applications/System
-Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2
-Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}.tar.bz2.sig
+Source0: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2
+Source1: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2.sig
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -26,6 +23,8 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source10: gpg-agent-startup.sh
 Source11: gpg-agent-shutdown.sh
 
+# http://lists.gnupg.org/pipermail/gnupg-devel/2006-November/023359.html 
+Patch1: gnupg-1.9.95-64bit.patch
 Patch2: gnupg-1.9.16-testverbose.patch
 Patch3: gnupg-1.9.91-dearmor.patch
 
@@ -56,10 +55,8 @@ BuildRequires: pcsc-lite-libs
 Requires: fileutils util-linux
 Requires: pinentry >= 0.7.1
 
-%if "%{?_enable_gpg:1}" == "1"
 Provides: gpg
 Provides: openpgp
-%endif
 
 %description
 GnuPG 1.9 is the future version of GnuPG; it is based on some gnupg-1.3
@@ -79,6 +76,7 @@ alongside; in act we suggest to do this.
 %prep
 %setup -q -n gnupg-%{version}
 
+#patch1 -p1 -b .64bit
 #patch2 -p1 -b .testverbose
 %patch3 -p1 -b .dearmor
 
@@ -96,26 +94,15 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 %build
 
-# see --disable-optimization below
-%ifarch x86_64
-#export CFLAGS="%(echo %{optflags} | sed -e 's|-O2|-O0|')"
-%endif
-
 %configure \
   --disable-rpath \
   --enable-selinux-support \
-  %{?_enable_gpg} \
 %ifarch x86_64
   --disable-optimization 
 %endif
 
 # not smp-safe
 make 
-
-
-%check
-# some gpg2 tests (still) FAIL
-make -k check ||:
 
 
 %install
@@ -139,6 +126,11 @@ mv $RPM_BUILD_ROOT%{_mandir}/man7/gnupg.7 $RPM_BUILD_ROOT%{_mandir}/man7/gnupg2.
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 
+%check
+# some gpg2 tests (still) FAIL
+make -k check ||:
+
+
 %post
 /sbin/install-info %{_infodir}/gnupg.info %{_infodir}/dir ||:
 
@@ -147,15 +139,14 @@ if [ $1 -eq 0 ]; then
   /sbin/install-info --delete %{_infodir}/gnupg.info %{_infodir}/dir ||:
 fi
 
+
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
-%if "%{?_enable_gpg:1}" == "1"
 #docs say to install suid root, but we won't, for now.
 #attr(4755,root,root) %{_bindir}/gpg2
 %{_bindir}/gpg2
 %{_bindir}/gpgv2
-%endif
 %{_bindir}/gpg-connect-agent
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
@@ -176,11 +167,18 @@ fi
 %{kde_scriptdir}/env/*.sh
 %{kde_scriptdir}/shutdown/*.sh
 
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 13 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0-1
+- 2.0
+
+* Fri Nov 10 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.95-3
+- upstream 64bit patch
+
 * Mon Nov 06 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.95-2
 - fix (more) file conflicts with gnupg
 
