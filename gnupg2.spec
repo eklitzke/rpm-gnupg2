@@ -10,7 +10,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -24,7 +24,7 @@ Source10: gpg-agent-startup.sh
 Source11: gpg-agent-shutdown.sh
 
 # http://lists.gnupg.org/pipermail/gnupg-devel/2006-November/023359.html 
-Patch1: gnupg-1.9.95-64bit.patch
+#Patch1: gnupg-1.9.95-64bit.patch
 Patch2: gnupg-1.9.16-testverbose.patch
 Patch3: gnupg-1.9.91-dearmor.patch
 
@@ -173,8 +173,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Mon Nov 13 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0-1
-- 2.0
+* Mon Nov 13 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.0-2
+- 2.0.0
 
 * Fri Nov 10 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.95-3
 - upstream 64bit patch
