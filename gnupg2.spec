@@ -10,7 +10,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -23,10 +23,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source10: gpg-agent-startup.sh
 Source11: gpg-agent-shutdown.sh
 
-# http://lists.gnupg.org/pipermail/gnupg-devel/2006-November/023359.html 
-#Patch1: gnupg-1.9.95-64bit.patch
-Patch2: gnupg-1.9.16-testverbose.patch
-Patch3: gnupg-1.9.91-dearmor.patch
+Patch1: gnupg-1.9.16-testverbose.patch
 
 Obsoletes: newpg < 0.9.5
 
@@ -59,26 +56,31 @@ Provides: gpg
 Provides: openpgp
 
 %description
-GnuPG 1.9 is the future version of GnuPG; it is based on some gnupg-1.3
-code and the previous newpg package.  It will eventually lead to a
-GnuPG 2.0 release.  Note that GnuPG 1.4 and 1.9 are not always in sync
-and thus features and bug fixes done in 1.4 are not necessarily
-available in 1.9.
+GnuPG is GNU's tool for secure communication and data storage.  It can
+be used to encrypt data and to create digital signatures.  It includes
+an advanced key management facility and is compliant with the proposed
+OpenPGP Internet standard as described in RFC2440 and the S/MIME
+standard as described by several RFCs.
 
-You should use this GnuPG version if you want to use the gpg-agent or
-gpgsm (the S/MIME variant of gpg).  Note that the gpg-agent is also
-helpful when using the standard gpg versions (1.4.x as well as some of
-the old 1.2.x).  There are no problems installing 1.4 and 1.9
-alongside; in act we suggest to do this.
+GnuPG 2.0 is the stable version of GnuPG integrating support for
+OpenPGP and S/MIME.  It does not conflict with an installed 1.x
+OpenPGP-only version.
+
+GnuPG 2.0 is a newer version of GnuPG with additional support for
+S/MIME.  It has a different design philosophy that splits
+functionality up into several modules.  Both versions may be installed
+simultaneously without any conflict (gpg is called gpg2 in GnuPG 2).
+In fact, the gpg version from GnuPG 1.x is able to make use of the
+gpg-agent as included in GnuPG 2 and allows for seamless passphrase
+caching.  The advantage of GnupG 1.x is its smaller size and no
+dependency on other modules at run and build time.
 
 
 
 %prep
 %setup -q -n gnupg-%{version}
 
-#patch1 -p1 -b .64bit
-#patch2 -p1 -b .testverbose
-%patch3 -p1 -b .dearmor
+#patch1 -p1 -b .testverbose
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -90,6 +92,9 @@ alongside; in act we suggest to do this.
 %endif
 
 sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
+
+# need scratch gpg database for tests
+mkdir -p $HOME/.gnupg 
 
 
 %build
@@ -173,6 +178,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Nov 16 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.0-4
+- update %%description
+- drop dearmor patch
+
 * Mon Nov 13 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.0-3
 - BR: libassuan-static >= 1.0.0
 
