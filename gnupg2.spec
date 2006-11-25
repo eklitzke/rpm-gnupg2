@@ -7,15 +7,17 @@
 %define kde_scriptdir %{_prefix}
 %endif
 
+%define beta rc1
+
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.0
-Release: 4%{?dist}
+Version: 2.0.1
+Release: 0.1.%{beta}%{?dist}
 
 License: GPL
 Group:   Applications/System
-Source0: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2
-Source1: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2.sig
+Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}%{?beta}.tar.bz2
+Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}%{?beta}.tar.bz2.sig
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -30,7 +32,7 @@ Obsoletes: newpg < 0.9.5
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 
-BuildRequires: libassuan-static >= 1.0.0 
+BuildRequires: libassuan-static >= 1.0.1 
 BuildRequires: libgcrypt-devel => 1.2.0
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.0
@@ -78,7 +80,7 @@ dependency on other modules at run and build time.
 
 
 %prep
-%setup -q -n gnupg-%{version}
+%setup -q -n gnupg-%{version}%{?beta}
 
 #patch1 -p1 -b .testverbose
 
@@ -178,6 +180,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov 25 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.1-0.1.rc1
+- gnupg-2.0.1rc1 
+
 * Thu Nov 16 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.0-4
 - update %%description
 - drop dearmor patch
@@ -186,7 +191,7 @@ rm -rf $RPM_BUILD_ROOT
 - BR: libassuan-static >= 1.0.0
 
 * Mon Nov 13 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.0-2
-- 2.0.0
+- gnupg-2.0.0
 
 * Fri Nov 10 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1.9.95-3
 - upstream 64bit patch
