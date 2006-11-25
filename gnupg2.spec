@@ -12,7 +12,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.1
-Release: 0.1.%{beta}%{?dist}
+Release: 0.2.%{beta}%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -180,7 +180,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat Nov 25 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.1-0.1.rc1
+* Sat Nov 25 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.1-0.2.rc1
 - gnupg-2.0.1rc1 
 
 * Thu Nov 16 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.0-4
