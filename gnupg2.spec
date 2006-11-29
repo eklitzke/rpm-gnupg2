@@ -7,17 +7,15 @@
 %define kde_scriptdir %{_prefix}
 %endif
 
-%define beta rc1
-
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.1
-Release: 0.3.%{beta}%{?dist}
+Release: 1%{?dist}
 
 License: GPL
 Group:   Applications/System
-Source0: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}%{?beta}.tar.bz2
-Source1: ftp://ftp.gnupg.org/gcrypt/alpha/gnupg/gnupg-%{version}%{?beta}.tar.bz2.sig
+Source0: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2
+Source1: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2.sig
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -179,6 +177,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov 29 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.1-1
+- gnupg-2.0.1
+
 * Sat Nov 25 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.1-0.3.rc1
 - gnupg-2.0.1rc1 
 
