@@ -10,7 +10,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -24,6 +24,7 @@ Source10: gpg-agent-startup.sh
 Source11: gpg-agent-shutdown.sh
 
 Patch1: gnupg-1.9.16-testverbose.patch
+Patch2: gnupg-2.0.1-CVE-2006-6235.patch
 
 Obsoletes: newpg < 0.9.5
 
@@ -81,6 +82,9 @@ dependency on other modules at run and build time.
 %setup -q -n gnupg-%{version}%{?beta}
 
 #patch1 -p1 -b .testverbose
+pushd g10
+%patch2 -p0 -b .CVE-2006-6235
+popd
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -177,8 +181,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 06 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.1-2
+- CVE-2006-6235
+
 * Wed Nov 29 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.1-1
 - gnupg-2.0.1
+- CVE-2006-6169 (bug #217950)
 
 * Sat Nov 25 2006 Rex Dieter <rexdieter[AT]users.sf.net> 2.0.1-0.3.rc1
 - gnupg-2.0.1rc1 
