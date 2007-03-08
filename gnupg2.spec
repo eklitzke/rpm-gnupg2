@@ -9,7 +9,7 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.2
+Version: 2.0.3
 Release: 1%{?dist}
 
 License: GPL
@@ -44,7 +44,7 @@ BuildRequires: zlib-devel
 BuildRequires: bzip2-devel
 Buildrequires: libusb-devel
 BuildRequires: docbook-utils
-%if "%{?fedora}" > "3"
+%if 0%{?fedora} > 3
 BuildRequires: pcsc-lite-libs
 %endif
 
@@ -177,6 +177,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Mar 08 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.3-1
+- gnupg-2.0.3
+
 * Fri Feb 02 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.2-1
 - gnupg-2.0.2
 
