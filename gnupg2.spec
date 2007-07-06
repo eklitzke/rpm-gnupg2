@@ -9,7 +9,7 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.3
+Version: 2.0.5
 Release: 1%{?dist}
 
 License: GPL
@@ -25,13 +25,14 @@ Source11: gpg-agent-shutdown.sh
 
 Patch1: gnupg-1.9.16-testverbose.patch
 
-Obsoletes: newpg < 0.9.5
+# ancient, deprecated
+#Obsoletes: newpg < 0.9.5
 
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 
 BuildRequires: libassuan-static >= 1.0.1 
-BuildRequires: libgcrypt-devel => 1.2.0
+BuildRequires: libgcrypt-devel => 1.2.2
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.0
 
@@ -177,6 +178,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 06 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.5-1
+- gnupg-2.0.5
+- gpg-agent not restarted after kde session crash/killed (#196327)
+
+* Fri May 18 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.4-1
+- gnupg-2.0.4
+
 * Thu Mar 08 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.3-1
 - gnupg-2.0.3
 
