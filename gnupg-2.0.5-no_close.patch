@@ -1,0 +1,9 @@
+--- common/estream.c    (revision 4541)
++++ common/estream.c    (working copy)
+@@ -861,6 +861,7 @@
+ #endif
+ 
+   file_cookie->fd = fd;
++  file_cookie->no_close = 0;
+   *cookie = file_cookie;
+   *filedes = fd;

@@ -10,7 +10,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPL
 Group:   Applications/System
@@ -24,6 +24,8 @@ Source10: gpg-agent-startup.sh
 Source11: gpg-agent-shutdown.sh
 
 Patch1: gnupg-1.9.16-testverbose.patch
+# http://lists.gnupg.org/pipermail/gnupg-devel/2007-July/023923.html
+Patch2: gnupg-2.0.5-no_close.patch
 
 # ancient, deprecated
 #Obsoletes: newpg < 0.9.5
@@ -82,6 +84,7 @@ dependency on other modules at run and build time.
 %setup -q -n gnupg-%{version}%{?beta}
 
 #patch1 -p1 -b .testverbose
+%patch2 -p0 -b .no_close
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -126,7 +129,6 @@ install -p -m0755 %{SOURCE11} $RPM_BUILD_ROOT%{kde_scriptdir}/shutdown/
 # file conflicts with gnupg-1.x 
 rm -f $RPM_BUILD_ROOT%{_bindir}/{gpgsplit,gpg-zip} 
 rm -f $RPM_BUILD_ROOT%{_datadir}/gnupg/{FAQ,faq.html}
-mv $RPM_BUILD_ROOT%{_mandir}/man7/gnupg.7 $RPM_BUILD_ROOT%{_mandir}/man7/gnupg2.7 ||:
 
 # Unpackaged files
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
@@ -178,6 +180,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jul 16 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.5-3
+- 2.0.5 too many open files fix
+
 * Fri Jul 06 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.5-2
 - gnupg-2.0.5
 - gpg-agent not restarted after kde session crash/killed (#196327)
