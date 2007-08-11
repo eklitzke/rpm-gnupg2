@@ -10,9 +10,9 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 
-License: GPL
+License: GPLv3
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2
 Source1: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2.sig
@@ -180,6 +180,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 02 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.5-4
+- License: GPLv3
+
 * Mon Jul 16 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.5-3
 - 2.0.5 too many open files fix
 
