@@ -9,10 +9,10 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.5
-Release: 4%{?dist}
+Version: 2.0.6
+Release: 1%{?dist}
 
-License: GPLv3
+License: GPLv3+
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2
 Source1: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2.sig
@@ -24,8 +24,6 @@ Source10: gpg-agent-startup.sh
 Source11: gpg-agent-shutdown.sh
 
 Patch1: gnupg-1.9.16-testverbose.patch
-# http://lists.gnupg.org/pipermail/gnupg-devel/2007-July/023923.html
-Patch2: gnupg-2.0.5-no_close.patch
 
 # ancient, deprecated
 #Obsoletes: newpg < 0.9.5
@@ -84,7 +82,6 @@ dependency on other modules at run and build time.
 %setup -q -n gnupg-%{version}%{?beta}
 
 #patch1 -p1 -b .testverbose
-%patch2 -p0 -b .no_close
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -180,6 +177,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 16 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.6-1
+- gnupg-2.0.6
+- License: GPLv3+
+
 * Thu Aug 02 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.5-4
 - License: GPLv3
 
