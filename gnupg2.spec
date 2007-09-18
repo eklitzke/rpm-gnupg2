@@ -9,7 +9,7 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.6
+Version: 2.0.7
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -31,7 +31,7 @@ Patch1: gnupg-1.9.16-testverbose.patch
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 
-BuildRequires: libassuan-devel >= 1.0.2
+BuildRequires: libassuan-devel >= 1.0.3
 BuildRequires: libgcrypt-devel => 1.2.2
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.2
@@ -51,7 +51,7 @@ BuildRequires: pcsc-lite-libs
 
 # sed/kill used in gpg-agent-(startup/shutdown).sh
 Requires: fileutils util-linux
-Requires: pinentry >= 0.7.1
+Requires: pinentry
 
 Provides: gpg
 Provides: openpgp
@@ -104,7 +104,7 @@ mkdir -p $HOME/.gnupg
   --disable-rpath \
   --enable-selinux-support \
 %ifarch x86_64
-  --disable-optimization 
+#  --disable-optimization 
 %endif
 
 # not smp-safe
@@ -132,7 +132,7 @@ rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 
 %check
-# some gpg2 tests (still) FAIL
+# some gpg2 tests (still) FAIL on non i386 platforms
 make -k check ||:
 
 
@@ -177,6 +177,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Sep 10 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.7-1
+- gnupg-2.0.7
+
+* Fri Aug 24 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.6-2
+- respin (libassuan)
+
 * Thu Aug 16 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.6-1
 - gnupg-2.0.6
 - License: GPLv3+
