@@ -1,5 +1,5 @@
 
-## Keep an eye on http://bugzilla.redhat.com/175744, 
+## Keep an eye on http://bugzilla.redhat.com/175744
 ## in case these dirs go away or change
 %if 0%{?fedora} > 3 || 0%{?rhel} > 4
 %define kde_scriptdir %{_sysconfdir}/kde
@@ -10,7 +10,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -25,33 +25,31 @@ Source11: gpg-agent-shutdown.sh
 
 Patch1: gnupg-1.9.16-testverbose.patch
 
-# ancient, deprecated
-#Obsoletes: newpg < 0.9.5
-
-Requires(post): /sbin/install-info
-Requires(postun): /sbin/install-info
-
+BuildRequires: bzip2-devel
+BuildRequires: docbook-utils
+BuildRequires: gettext
 BuildRequires: libassuan-devel >= 1.0.3
 BuildRequires: libgcrypt-devel => 1.2.2
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.2
-
-BuildRequires: gettext
-BuildRequires: readline-devel ncurses-devel
-BuildRequires: openldap-devel
 BuildRequires: libusb-devel
-BuildRequires: pth-devel
-BuildRequires: zlib-devel
-BuildRequires: bzip2-devel
-Buildrequires: libusb-devel
-BuildRequires: docbook-utils
-%if 0%{?fedora} > 3
+BuildRequires: openldap-devel
+%if 0%{?fedora} > 3 || 0%{?rhel} > 4
 BuildRequires: pcsc-lite-libs
 %endif
+BuildRequires: pth-devel
+BuildRequires: readline-devel ncurses-devel
+BuildRequires: zlib-devel
 
+Requires(post): /sbin/install-info
+Requires(postun): /sbin/install-info
+Requires(hint): dirmngr
 # sed/kill used in gpg-agent-(startup/shutdown).sh
 Requires: fileutils util-linux
 Requires: pinentry
+
+# ancient, deprecated
+#Obsoletes: newpg < 0.9.5
 
 Provides: gpg
 Provides: openpgp
@@ -94,18 +92,12 @@ dependency on other modules at run and build time.
 
 sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
-# need scratch gpg database for tests
-mkdir -p $HOME/.gnupg 
-
 
 %build
 
 %configure \
   --disable-rpath \
-  --enable-selinux-support \
-%ifarch x86_64
-#  --disable-optimization 
-%endif
+  --enable-selinux-support 
 
 # not smp-safe
 make 
@@ -132,6 +124,8 @@ rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 
 %check
+# need scratch gpg database for tests
+mkdir -p $HOME/.gnupg
 # some gpg2 tests (still) FAIL on non i386 platforms
 make -k check ||:
 
@@ -177,6 +171,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 03 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.7-2
+- Requires: dirmngr (#312831)
+
 * Mon Sep 10 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.7-1
 - gnupg-2.0.7
 
