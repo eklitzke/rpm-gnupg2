@@ -10,7 +10,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.7
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -99,6 +99,9 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
   --disable-rpath \
   --enable-selinux-support 
 
+# need scratch gpg database for tests
+mkdir -p $HOME/.gnupg
+
 # not smp-safe
 make 
 
@@ -171,6 +174,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 03 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.7-3
+- %%build: (re)add mkdir -p $HOME/.gnupg
+
 * Wed Oct 03 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.7-2
 - Requires: dirmngr (#312831)
 
