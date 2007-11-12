@@ -10,7 +10,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.7
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -47,6 +47,10 @@ Requires(hint): dirmngr
 # sed/kill used in gpg-agent-(startup/shutdown).sh
 Requires: fileutils util-linux
 Requires: pinentry
+# ownership of %{kde_scriptdir}
+%if 0%{?fedora} > 6
+Requires: kde-filesystem
+%endif
 
 # ancient, deprecated
 #Obsoletes: newpg < 0.9.5
@@ -174,6 +178,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Nov 12 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.7-4
+- Requires: kde-filesystem (#377841)
+
 * Wed Oct 03 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.7-3
 - %%build: (re)add mkdir -p $HOME/.gnupg
 
