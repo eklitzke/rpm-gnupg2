@@ -10,7 +10,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.7
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -178,6 +178,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 04 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.7-5
+- respin for openldap
+
 * Mon Nov 12 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.7-4
 - Requires: kde-filesystem (#377841)
 
