@@ -7,15 +7,17 @@
 %define kde_scriptdir %{_prefix}
 %endif
 
+%define pre rc1
+
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.7
-Release: 5%{?dist}
+Version: 2.0.8
+Release: 0.1.%{pre}%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
-Source0: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2
-Source1: ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-%{version}.tar.bz2.sig
+Source0: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2
+Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2.sig
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -26,9 +28,10 @@ Source11: gpg-agent-shutdown.sh
 Patch1: gnupg-1.9.16-testverbose.patch
 
 BuildRequires: bzip2-devel
+BuildRequires: curl-devel
 BuildRequires: docbook-utils
 BuildRequires: gettext
-BuildRequires: libassuan-devel >= 1.0.3
+BuildRequires: libassuan-devel >= 1.0.4
 BuildRequires: libgcrypt-devel => 1.2.2
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.2
@@ -81,7 +84,7 @@ dependency on other modules at run and build time.
 
 
 %prep
-%setup -q -n gnupg-%{version}%{?beta}
+%setup -q -n gnupg-%{version}%{?pre}
 
 #patch1 -p1 -b .testverbose
 
@@ -178,6 +181,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Dec 17 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.8-0.1.rc1
+- gnupg2-2.0.8rc1
+
 * Tue Dec 04 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.7-5
 - respin for openldap
 
