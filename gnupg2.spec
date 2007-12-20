@@ -7,12 +7,10 @@
 %define kde_scriptdir %{_prefix}
 %endif
 
-%define pre rc1
-
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.8
-Release: 0.1.%{pre}%{?dist}
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -181,6 +179,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 20 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.8-1
+- gnupg2-2.0.8
+
 * Mon Dec 17 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 2.0.8-0.1.rc1
 - gnupg2-2.0.8rc1
 
