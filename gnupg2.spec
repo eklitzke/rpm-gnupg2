@@ -18,6 +18,9 @@ BuildRequires: curl-devel
 BuildRequires: docbook-utils
 BuildRequires: gettext
 BuildRequires: libassuan-devel >= 1.0.4
+# libgcrypt-devel >= 1.4.0 is preferred, see http://bugzilla.redhat.com/435320
+#BuildRequires:  libgcrypt-devel >= 1.4.0
+#Requires(hint): libgcrypt >= 1.4.0
 BuildRequires: libgcrypt-devel => 1.2.2
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.2
@@ -33,7 +36,7 @@ BuildRequires: zlib-devel
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 Requires(hint): dirmngr
-Requires: pinentry
+Requires(hint): pinentry
 
 # ancient, deprecated
 #Obsoletes: newpg < 0.9.5
