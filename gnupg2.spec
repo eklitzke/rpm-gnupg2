@@ -1,8 +1,8 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.8
-Release: 3%{?dist}
+Version: 2.0.9
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -28,6 +28,8 @@ BuildRequires: libusb-devel
 BuildRequires: openldap-devel
 %if 0%{?fedora} > 3 || 0%{?rhel} > 4
 BuildRequires: pcsc-lite-libs
+%else
+%define pcsclib libpcsclite.so.0
 %endif
 BuildRequires: pth-devel
 BuildRequires: readline-devel ncurses-devel
@@ -38,11 +40,8 @@ Requires(postun): /sbin/install-info
 Requires(hint): dirmngr
 Requires(hint): pinentry
 
-# ancient, deprecated
-#Obsoletes: newpg < 0.9.5
-
-Provides: gpg
-Provides: openpgp
+# pgp-tools, perl-GnuPG-Interface requires 'gpg' (not sure why) -- Rex
+Provides: gpg = %{version}-%{release}
 
 %description
 GnuPG is GNU's tool for secure communication and data storage.  It can
@@ -74,10 +73,8 @@ dependency on other modules at run and build time.
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
 # it can use other implementations too (including non-pcsc ones).
-%if 0%{?fedora} > 3 || 0%{?rhel} > 4
+%if "%{?pcsclib}" == "%{nil}"
 %global pcsclib %(basename $(ls -1 %{_libdir}/libpcsclite.so.? 2>/dev/null ) 2>/dev/null )
-%else
-%define pcsclib libpcsclite.so.0
 %endif
 
 sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
@@ -97,18 +94,25 @@ make
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
-make install DESTDIR=$RPM_BUILD_ROOT
+make install DESTDIR=%{buildroot} \
+  INSTALL="install -p"
 
 %find_lang %{name}
 
-# file conflicts with gnupg-1.x 
-rm -f $RPM_BUILD_ROOT%{_bindir}/{gpgsplit,gpg-zip} 
-rm -f $RPM_BUILD_ROOT%{_datadir}/gnupg/{FAQ,faq.html}
+# gpgconf.conf
+mkdir -p %{buildroot}%{_sysconfdir}/gnupg
+touch %{buildroot}%{_sysconfdir}/gnupg/gpgconf.conf
 
-# Unpackaged files
-rm -f $RPM_BUILD_ROOT%{_infodir}/dir
+## Unpackaged files
+# file conflicts with gnupg-1.x
+# shouldn't gnupg2 be providing these now (maybe only f9+)? -- Rex
+rm -f %{buildroot}%{_bindir}/{gpgsplit,gpg-zip} 
+rm -f %{buildroot}%{_datadir}/gnupg/{FAQ,faq.html}
+
+# info dir
+rm -f %{buildroot}%{_infodir}/dir
 
 
 %check
@@ -130,6 +134,8 @@ fi
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%dir %{_sysconfdir}/gnupg
+%ghost %config(noreplace) %{_sysconfdir}/gnupg/gpgconf.conf
 #docs say to install suid root, but we won't, for now.
 #attr(4755,root,root) %{_bindir}/gpg2
 %{_bindir}/gpg2
@@ -148,15 +154,21 @@ fi
 %{_sbindir}/*
 %{_datadir}/gnupg/
 %{_libexecdir}/*
-%{_infodir}/*
+%{_infodir}/*.info*
 %{_mandir}/man?/*
 
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 
 %changelog
+* Wed Mar 26 2008 Rex Dieter <rdieter@fedoraproject.org> 2.0.9-1
+- gnupg2-2.0.9
+- drop Provides: openpgp
+- versioned Provides: gpg
+- own /etc/gnupg
+
 * Fri Feb 08 2008 Rex Dieter <rdieter@fedoraproject.org> 2.0.8-3 
 - respin (gcc43)
 
