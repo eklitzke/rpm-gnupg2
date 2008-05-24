@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.9
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -12,6 +12,10 @@ URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Patch1: gnupg-1.9.16-testverbose.patch
+
+# Patch from upstream to fix curl 7.18.1+ and gcc4.3+ compile error
+# http://lists.gnupg.org/pipermail/gnupg-devel/2008-April/024344.html
+Patch2: gnupg2-2.0.9-gcc43.patch
 
 BuildRequires: bzip2-devel
 BuildRequires: curl-devel
@@ -69,6 +73,7 @@ dependency on other modules at run and build time.
 %setup -q -n gnupg-%{version}%{?pre}
 
 #patch1 -p1 -b .testverbose
+%patch2 -p1 -b .gcc43
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -163,6 +168,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat May 24 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.0.9-2
+- Patch from upstream to fix curl 7.18.1+ and gcc4.3+ compile error
+
+* Mon May 19 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.0.9-1.1
+- minor release bump for sparc rebuild
+
 * Wed Mar 26 2008 Rex Dieter <rdieter@fedoraproject.org> 2.0.9-1
 - gnupg2-2.0.9
 - drop Provides: openpgp
