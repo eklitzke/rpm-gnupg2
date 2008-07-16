@@ -178,7 +178,7 @@ rm -rf %{buildroot}
 - gnupg2-2.0.9
 - drop Provides: openpgp
 - versioned Provides: gpg
-- own /etc/gnupg
+- own %%_sysconfdir/gnupg
 
 * Fri Feb 08 2008 Rex Dieter <rdieter@fedoraproject.org> 2.0.8-3 
 - respin (gcc43)
