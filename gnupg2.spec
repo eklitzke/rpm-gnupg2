@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.9
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -78,7 +78,7 @@ dependency on other modules at run and build time.
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
 # it can use other implementations too (including non-pcsc ones).
-%if "%{?pcsclib}" == "%{nil}"
+%if "x%{?pcsclib}" == "x%{nil}"
 %global pcsclib %(basename $(ls -1 %{_libdir}/libpcsclite.so.? 2>/dev/null ) 2>/dev/null )
 %endif
 
@@ -168,6 +168,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Aug 04 2008 Rex Dieter <rdieter@fedoraproject.org> 2.0.9-3
+- workaround rpm quirks 
+
 * Sat May 24 2008 Tom "spot" Callaway <tcallawa@redhat.com> 2.0.9-2
 - Patch from upstream to fix curl 7.18.1+ and gcc4.3+ compile error
 
