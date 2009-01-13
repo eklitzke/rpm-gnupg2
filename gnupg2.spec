@@ -1,8 +1,8 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.9
-Release: 3%{?dist}
+Version: 2.0.10
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -11,21 +11,15 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Patch1: gnupg-1.9.16-testverbose.patch
-
-# Patch from upstream to fix curl 7.18.1+ and gcc4.3+ compile error
-# http://lists.gnupg.org/pipermail/gnupg-devel/2008-April/024344.html
-Patch2: gnupg2-2.0.9-gcc43.patch
-
 BuildRequires: bzip2-devel
 BuildRequires: curl-devel
 BuildRequires: docbook-utils
 BuildRequires: gettext
 BuildRequires: libassuan-devel >= 1.0.4
 # libgcrypt-devel >= 1.4.0 is preferred, see http://bugzilla.redhat.com/435320
-#BuildRequires:  libgcrypt-devel >= 1.4.0
-#Requires(hint): libgcrypt >= 1.4.0
-BuildRequires: libgcrypt-devel => 1.2.2
+BuildRequires:  libgcrypt-devel >= 1.4
+#Requires(hint): libgcrypt >= 1.4
+#BuildRequires: libgcrypt-devel => 1.2.2
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.2
 BuildRequires: libusb-devel
@@ -72,9 +66,6 @@ dependency on other modules at run and build time.
 %prep
 %setup -q -n gnupg-%{version}%{?pre}
 
-#patch1 -p1 -b .testverbose
-%patch2 -p1 -b .gcc43
-
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
 # it can use other implementations too (including non-pcsc ones).
@@ -102,7 +93,8 @@ make
 rm -rf %{buildroot}
 
 make install DESTDIR=%{buildroot} \
-  INSTALL="install -p"
+  INSTALL="install -p" \
+  docdir=%{_docdir}/%{name}-%{version}
 
 %find_lang %{name}
 
@@ -110,11 +102,15 @@ make install DESTDIR=%{buildroot} \
 mkdir -p %{buildroot}%{_sysconfdir}/gnupg
 touch %{buildroot}%{_sysconfdir}/gnupg/gpgconf.conf
 
+# more docs
+install -m644 -p AUTHORS COPYING ChangeLog NEWS THANKS TODO \
+  %{buildroot}%{_docdir}/%{name}-%{version}/
+
 ## Unpackaged files
 # file conflicts with gnupg-1.x
-# shouldn't gnupg2 be providing these now (maybe only f9+)? -- Rex
+# shouldn't gnupg2 be providing these now (maybe only f11+)? -- Rex
 rm -f %{buildroot}%{_bindir}/{gpgsplit,gpg-zip} 
-rm -f %{buildroot}%{_datadir}/gnupg/{FAQ,faq.html}
+rm -f %{buildroot}%{_mandir}/man1/gpg-zip.1*
 
 # info dir
 rm -f %{buildroot}%{_infodir}/dir
@@ -138,7 +134,8 @@ fi
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+#doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%{_docdir}/%{name}-%{version}/
 %dir %{_sysconfdir}/gnupg
 %ghost %config(noreplace) %{_sysconfdir}/gnupg/gpgconf.conf
 #docs say to install suid root, but we won't, for now.
@@ -168,6 +165,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Jan 13 2009 Rex Dieter <rdieter@fedoraproject.org> 2.0.10-1
+- gnupg-2.0.10
+
 * Mon Aug 04 2008 Rex Dieter <rdieter@fedoraproject.org> 2.0.9-3
 - workaround rpm quirks 
 
