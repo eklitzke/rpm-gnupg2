@@ -22,12 +22,14 @@ BuildRequires:  libgcrypt-devel >= 1.4
 #BuildRequires: libgcrypt-devel => 1.2.2
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.2
-BuildRequires: libusb-devel
 BuildRequires: openldap-devel
+%ifnarch s390 s390x
+BuildRequires: libusb-devel
 %if 0%{?fedora} > 3 || 0%{?rhel} > 4
 BuildRequires: pcsc-lite-libs
 %else
 %define pcsclib libpcsclite.so.0
+%endif
 %endif
 BuildRequires: pth-devel
 BuildRequires: readline-devel ncurses-devel
@@ -165,6 +167,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sat Jan 31 2009 Karsten Hopp <karsten@redhat.com> 2.0.10-1
+- don't require pcsc-lite-libs and libusb on mainframe where
+  we don't have those packages as there's no hardware for that
+
 * Tue Jan 13 2009 Rex Dieter <rdieter@fedoraproject.org> 2.0.10-1
 - gnupg-2.0.10
 
