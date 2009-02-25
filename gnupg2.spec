@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.10
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -167,6 +167,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.10-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Sat Jan 31 2009 Karsten Hopp <karsten@redhat.com> 2.0.10-1
 - don't require pcsc-lite-libs and libusb on mainframe where
   we don't have those packages as there's no hardware for that
