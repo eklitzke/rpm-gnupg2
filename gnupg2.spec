@@ -1,8 +1,8 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.10
-Release: 2%{?dist}
+Version: 2.0.11
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -167,6 +167,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Mar 04 2009 Rex Dieter <rdieter@fedoraproject.org> - 2.0.11-1
+- gnupg-2.0.11
+
 * Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.10-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
