@@ -1,7 +1,7 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.11
+Version: 2.0.12
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -140,7 +140,7 @@ fi
 %{_docdir}/%{name}-%{version}/
 %dir %{_sysconfdir}/gnupg
 %ghost %config(noreplace) %{_sysconfdir}/gnupg/gpgconf.conf
-#docs say to install suid root, but we won't, for now.
+## docs say to install suid root, but fedora/rh security folk say not to
 #attr(4755,root,root) %{_bindir}/gpg2
 %{_bindir}/gpg2
 %{_bindir}/gpgv2
@@ -167,6 +167,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Jun 17 2009 Rex Dieter <rdieter@fedoraproject.org> - 2.0.12-1
+- gnupg-2.0.12
+
 * Wed Mar 04 2009 Rex Dieter <rdieter@fedoraproject.org> - 2.0.11-1
 - gnupg-2.0.11
 
