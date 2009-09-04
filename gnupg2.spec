@@ -1,16 +1,19 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.12
-Release: 2%{?dist}
+Version: 2.0.13
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
 Source0: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2
 Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2.sig
+# svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
+#Source0: gnupg2-20090809svn.tar.bz2
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+#BuildRequires: automake libtool texinfo transfig
 BuildRequires: bzip2-devel
 BuildRequires: curl-devel
 BuildRequires: docbook-utils
@@ -66,7 +69,7 @@ dependency on other modules at run and build time.
 
 
 %prep
-%setup -q -n gnupg-%{version}%{?pre}
+%setup -q -n gnupg-%{version}
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -76,6 +79,10 @@ dependency on other modules at run and build time.
 %endif
 
 sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
+
+# fix temp broken docs
+#sed -i -e 's/^@include version.texi//' doc/gnupg.texi
+#./autogen.sh
 
 
 %build
@@ -122,7 +129,7 @@ rm -f %{buildroot}%{_infodir}/dir
 # need scratch gpg database for tests
 mkdir -p $HOME/.gnupg
 # some gpg2 tests (still) FAIL on non i386 platforms
-make -k check ||:
+make -k check 
 
 
 %post
@@ -167,6 +174,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Sep 04 2009 Rex Dieter <rdieter@fedoraproject.org> - 2.0.13-1
+- gnupg-2.0.13
+- Unable to use gpg-agent + input methods (#228953)
+
 * Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.12-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
