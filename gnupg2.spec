@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.13
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -10,6 +10,8 @@ Source0: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2.sig
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
+Patch1:  gnupg-2.0.13-insttools.patch
+
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -45,6 +47,9 @@ Requires(hint): pinentry
 
 # pgp-tools, perl-GnuPG-Interface requires 'gpg' (not sure why) -- Rex
 Provides: gpg = %{version}-%{release}
+# Obsolete GnuPG-1 package
+Provides: gnupg = 1.4.10
+Obsoletes: gnupg <= 1.4.10
 
 %description
 GnuPG is GNU's tool for secure communication and data storage.  It can
@@ -70,6 +75,8 @@ dependency on other modules at run and build time.
 
 %prep
 %setup -q -n gnupg-%{version}
+
+%patch1 -p1 -b .insttools
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -115,11 +122,12 @@ touch %{buildroot}%{_sysconfdir}/gnupg/gpgconf.conf
 install -m644 -p AUTHORS COPYING ChangeLog NEWS THANKS TODO \
   %{buildroot}%{_docdir}/%{name}-%{version}/
 
-## Unpackaged files
-# file conflicts with gnupg-1.x
-# shouldn't gnupg2 be providing these now (maybe only f11+)? -- Rex
-rm -f %{buildroot}%{_bindir}/{gpgsplit,gpg-zip} 
-rm -f %{buildroot}%{_mandir}/man1/gpg-zip.1*
+# compat symlinks
+ln -sf gpg2 %{buildroot}%{_bindir}/gpg
+ln -sf gpgv2 %{buildroot}%{_bindir}/gpgv
+ln -sf gpg2.1 %{buildroot}%{_mandir}/man1/gpg.1
+ln -sf gpgv2.1 %{buildroot}%{_mandir}/man1/gpgv.1
+
 
 # info dir
 rm -f %{buildroot}%{_infodir}/dir
@@ -151,14 +159,16 @@ fi
 #attr(4755,root,root) %{_bindir}/gpg2
 %{_bindir}/gpg2
 %{_bindir}/gpgv2
+%{_bindir}/gpg
+%{_bindir}/gpgv
 %{_bindir}/gpg-connect-agent
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
 %{_bindir}/gpgkey2ssh
 %{_bindir}/gpgparsemail
 %{_bindir}/gpgsm*
-#{_bindir}/gpgsplit
-#{_bindir}/gpg-zip
+%{_bindir}/gpgsplit
+%{_bindir}/gpg-zip
 %{_bindir}/kbxutil
 %{_bindir}/scdaemon
 %{_bindir}/watchgnupg
@@ -174,6 +184,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Oct 21 2009 Tomas Mraz <tmraz@redhat.com> - 2.0.13-2
+- provide/obsolete gnupg-1 and add compat symlinks to be able to drop
+  gnupg-1
+
 * Fri Sep 04 2009 Rex Dieter <rdieter@fedoraproject.org> - 2.0.13-1
 - gnupg-2.0.13
 - Unable to use gpg-agent + input methods (#228953)
