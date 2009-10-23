@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.13
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -28,28 +28,28 @@ BuildRequires:  libgcrypt-devel >= 1.4
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.2
 BuildRequires: openldap-devel
-%ifnarch s390 s390x
 BuildRequires: libusb-devel
-%if 0%{?fedora} > 3 || 0%{?rhel} > 4
 BuildRequires: pcsc-lite-libs
-%else
-%define pcsclib libpcsclite.so.0
-%endif
-%endif
 BuildRequires: pth-devel
 BuildRequires: readline-devel ncurses-devel
 BuildRequires: zlib-devel
 
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
-Requires(hint): dirmngr
 Requires(hint): pinentry
 
 # pgp-tools, perl-GnuPG-Interface requires 'gpg' (not sure why) -- Rex
 Provides: gpg = %{version}-%{release}
 # Obsolete GnuPG-1 package
-Provides: gnupg = 1.4.10
+Provides: gnupg = %{version}-%{release}
 Obsoletes: gnupg <= 1.4.10
+
+%package smime
+Summary: CMS encryption and signing tool and smart card support for GnuPG
+Requires: gnupg2 = %{version}-%{release}
+Group: Applications/Internet
+Requires(hint): dirmngr
+
 
 %description
 GnuPG is GNU's tool for secure communication and data storage.  It can
@@ -58,20 +58,15 @@ an advanced key management facility and is compliant with the proposed
 OpenPGP Internet standard as described in RFC2440 and the S/MIME
 standard as described by several RFCs.
 
-GnuPG 2.0 is the stable version of GnuPG integrating support for
-OpenPGP and S/MIME.  It does not conflict with an installed 1.x
-OpenPGP-only version.
-
 GnuPG 2.0 is a newer version of GnuPG with additional support for
 S/MIME.  It has a different design philosophy that splits
-functionality up into several modules.  Both versions may be installed
-simultaneously without any conflict (gpg is called gpg2 in GnuPG 2).
-In fact, the gpg version from GnuPG 1.x is able to make use of the
-gpg-agent as included in GnuPG 2 and allows for seamless passphrase
-caching.  The advantage of GnupG 1.x is its smaller size and no
-dependency on other modules at run and build time.
+functionality up into several modules. The S/MIME and smartcard functionality
+is provided by the gnupg2-smime package.
 
-
+%description smime
+GnuPG is GNU's tool for secure communication and data storage. This
+package adds support for smart cards and S/MIME encryption and signing
+to the base GnuPG package 
 
 %prep
 %setup -q -n gnupg-%{version}
@@ -81,9 +76,7 @@ dependency on other modules at run and build time.
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
 # it can use other implementations too (including non-pcsc ones).
-%if "x%{?pcsclib}" == "x%{nil}"
 %global pcsclib %(basename $(ls -1 %{_libdir}/libpcsclite.so.? 2>/dev/null ) 2>/dev/null )
-%endif
 
 sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
@@ -96,13 +89,13 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 
 %configure \
   --disable-rpath \
-  --enable-selinux-support 
+  --enable-selinux-support
 
 # need scratch gpg database for tests
 mkdir -p $HOME/.gnupg
 
 # not smp-safe
-make 
+make
 
 
 %install
@@ -137,7 +130,7 @@ rm -f %{buildroot}%{_infodir}/dir
 # need scratch gpg database for tests
 mkdir -p $HOME/.gnupg
 # some gpg2 tests (still) FAIL on non i386 platforms
-make -k check 
+make -k check
 
 
 %post
@@ -166,24 +159,37 @@ fi
 %{_bindir}/gpgconf
 %{_bindir}/gpgkey2ssh
 %{_bindir}/gpgparsemail
-%{_bindir}/gpgsm*
 %{_bindir}/gpgsplit
 %{_bindir}/gpg-zip
-%{_bindir}/kbxutil
-%{_bindir}/scdaemon
 %{_bindir}/watchgnupg
 %{_sbindir}/*
 %{_datadir}/gnupg/
 %{_libexecdir}/*
 %{_infodir}/*.info*
 %{_mandir}/man?/*
+%exclude %{_datadir}/gnupg/com-certs.pem
+%exclude %{_mandir}/man?/gpgsm*
+%exclude %{_mandir}/man?/scdaemon*
 
+%files smime
+%defattr(-,root,root,-)
+%{_bindir}/gpgsm*
+%{_bindir}/kbxutil
+%{_bindir}/scdaemon
+%{_mandir}/man?/gpgsm*
+%{_mandir}/man?/scdaemon*
+%{_datadir}/gnupg/com-certs.pem
 
 %clean
 rm -rf %{buildroot}
 
 
 %changelog
+* Fri Oct 23 2009 Tomas Mraz <tmraz@redhat.com> - 2.0.13-3
+- drop s390 specific ifnarchs as all the previously missing dependencies
+  are now there
+- split out gpgsm into a smime subpackage to reduce main package dependencies
+
 * Wed Oct 21 2009 Tomas Mraz <tmraz@redhat.com> - 2.0.13-2
 - provide/obsolete gnupg-1 and add compat symlinks to be able to drop
   gnupg-1
