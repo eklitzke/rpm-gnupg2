@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.13
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -20,7 +20,7 @@ BuildRequires: bzip2-devel
 BuildRequires: curl-devel
 BuildRequires: docbook-utils
 BuildRequires: gettext
-BuildRequires: libassuan-devel >= 1.0.4
+BuildRequires: libassuan-static, libassuan-devel >= 1.0.4
 # libgcrypt-devel >= 1.4.0 is preferred, see http://bugzilla.redhat.com/435320
 BuildRequires:  libgcrypt-devel >= 1.4
 #Requires(hint): libgcrypt >= 1.4
@@ -185,6 +185,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Dec  8 2009 Michael Schwendt <mschwendt@fedoraproject.org> - 2.0.13-4
+- Explicitly BR libassuan-static in accordance with the Packaging
+  Guidelines (libassuan-devel is still static-only).
+
 * Fri Oct 23 2009 Tomas Mraz <tmraz@redhat.com> - 2.0.13-3
 - drop s390 specific ifnarchs as all the previously missing dependencies
   are now there
