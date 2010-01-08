@@ -1,8 +1,8 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.13
-Release: 4%{?dist}
+Version: 2.0.14
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -185,6 +185,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jan  8 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.14-1
+- new upstream version
+
 * Tue Dec  8 2009 Michael Schwendt <mschwendt@fedoraproject.org> - 2.0.13-4
 - Explicitly BR libassuan-static in accordance with the Packaging
   Guidelines (libassuan-devel is still static-only).
