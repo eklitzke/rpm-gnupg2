@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.14
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -24,8 +24,6 @@ BuildRequires: gettext
 BuildRequires: libassuan-static, libassuan-devel >= 1.0.4
 # libgcrypt-devel >= 1.4.0 is preferred, see http://bugzilla.redhat.com/435320
 BuildRequires:  libgcrypt-devel >= 1.4
-#Requires(hint): libgcrypt >= 1.4
-#BuildRequires: libgcrypt-devel => 1.2.2
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.2
 BuildRequires: openldap-devel
@@ -90,8 +88,7 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 %build
 
 %configure \
-  --disable-rpath \
-  --enable-selinux-support
+  --disable-rpath
 
 # need scratch gpg database for tests
 mkdir -p $HOME/.gnupg
@@ -187,6 +184,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Feb  9 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.14-2
+- disable selinux support - it is too rudimentary and restrictive (#562982)
+
 * Mon Jan 11 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.14-1
 - new upstream version
 - fix a few tests so they do not need to execute gpg-agent
