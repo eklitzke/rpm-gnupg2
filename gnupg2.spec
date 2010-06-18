@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.14
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -12,6 +12,7 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 #Source0: gnupg2-20090809svn.tar.bz2
 Patch1:  gnupg-2.0.13-insttools.patch
 Patch2:  gnupg-2.0.14-tests-s2kcount.patch
+Patch3:  gnupg-2.0.14-secmem.patch
 
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -72,6 +73,7 @@ to the base GnuPG package
 
 %patch1 -p1 -b .insttools
 %patch2 -p1 -b .s2k
+%patch3 -p1 -b .secmem
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -184,6 +186,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jun 18 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.14-3
+- initialize small amount of secmem for list of algorithms in help (#598847)
+  (necessary in the FIPS mode of libgcrypt)
+
 * Tue Feb  9 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.14-2
 - disable selinux support - it is too rudimentary and restrictive (#562982)
 
