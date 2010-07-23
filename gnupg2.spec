@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.14
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -17,14 +17,18 @@ Patch3:  gnupg-2.0.14-secmem.patch
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+## upstream patches
+# Security Alert for GnuPG 2.0 - Realloc bug in GPGSM
+# http://lists.gnupg.org/pipermail/gnupg-announce/2010q3/000302.html
+Patch100: gnupg-2.0.16-gpgsm_realloc.patch
+
 #BuildRequires: automake libtool texinfo transfig
 BuildRequires: bzip2-devel
 BuildRequires: curl-devel
 BuildRequires: docbook-utils
 BuildRequires: gettext
 BuildRequires: libassuan-static, libassuan-devel >= 1.0.4
-# libgcrypt-devel >= 1.4.0 is preferred, see http://bugzilla.redhat.com/435320
-BuildRequires:  libgcrypt-devel >= 1.4
+BuildRequires: libgcrypt-devel >= 1.4
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.2
 BuildRequires: openldap-devel
@@ -74,6 +78,7 @@ to the base GnuPG package
 %patch1 -p1 -b .insttools
 %patch2 -p1 -b .s2k
 %patch3 -p1 -b .secmem
+%patch100 -p1 -b .gpgsm_realloc
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -81,10 +86,6 @@ to the base GnuPG package
 %global pcsclib %(basename $(ls -1 %{_libdir}/libpcsclite.so.? 2>/dev/null ) 2>/dev/null )
 
 sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
-
-# fix temp broken docs
-#sed -i -e 's/^@include version.texi//' doc/gnupg.texi
-#./autogen.sh
 
 
 %build
@@ -186,6 +187,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jul 23 2010 Rex Dieter <rdieter@fedoraproject.org> - 2.0.14-4
+- gpgsm realloc patch
+
 * Fri Jun 18 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.14-3
 - initialize small amount of secmem for list of algorithms in help (#598847)
   (necessary in the FIPS mode of libgcrypt)
