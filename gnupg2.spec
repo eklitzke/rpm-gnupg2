@@ -188,7 +188,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Fri Jul 23 2010 Rex Dieter <rdieter@fedoraproject.org> - 2.0.14-4
-- gpgsm realloc patch
+- gpgsm realloc patch (#617706)
 
 * Fri Jun 18 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.14-3
 - initialize small amount of secmem for list of algorithms in help (#598847)
