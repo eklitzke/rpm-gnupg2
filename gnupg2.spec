@@ -1,8 +1,8 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.14
-Release: 4%{?dist}
+Version: 2.0.16
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -11,7 +11,7 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
 Patch1:  gnupg-2.0.13-insttools.patch
-Patch2:  gnupg-2.0.14-tests-s2kcount.patch
+Patch2:  gnupg-2.0.16-tests-s2kcount.patch
 Patch3:  gnupg-2.0.14-secmem.patch
 
 URL:     http://www.gnupg.org/
@@ -27,7 +27,7 @@ BuildRequires: bzip2-devel
 BuildRequires: curl-devel
 BuildRequires: docbook-utils
 BuildRequires: gettext
-BuildRequires: libassuan-static, libassuan-devel >= 1.0.4
+BuildRequires: libassuan-devel >= 2.0.0
 BuildRequires: libgcrypt-devel >= 1.4
 BuildRequires: libgpg-error-devel => 1.4
 BuildRequires: libksba-devel >= 1.0.2
@@ -117,7 +117,7 @@ touch %{buildroot}%{_sysconfdir}/gnupg/gpgconf.conf
 install -m644 -p AUTHORS COPYING ChangeLog NEWS THANKS TODO \
   %{buildroot}%{_docdir}/%{name}-%{version}/
 
-# compat symlinks
+# compat symlinks (these need to go away when/if gnupg1 review passes)
 ln -sf gpg2 %{buildroot}%{_bindir}/gpg
 ln -sf gpgv2 %{buildroot}%{_bindir}/gpgv
 ln -sf gpg2.1 %{buildroot}%{_mandir}/man1/gpg.1
@@ -182,11 +182,15 @@ fi
 %{_mandir}/man?/scdaemon*
 %{_datadir}/gnupg/com-certs.pem
 
+
 %clean
 rm -rf %{buildroot}
 
 
 %changelog
+* Tue Jul 27 2010 Rex Dieter <rdieter@fedoraproject.org> - 2.0.16-1
+- gnupg-2.0.16
+
 * Fri Jul 23 2010 Rex Dieter <rdieter@fedoraproject.org> - 2.0.14-4
 - gpgsm realloc patch (#617706)
 
