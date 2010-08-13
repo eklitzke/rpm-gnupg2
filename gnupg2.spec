@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.16
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -10,7 +10,6 @@ Source0: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2.sig
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
-Patch1:  gnupg-2.0.13-insttools.patch
 Patch2:  gnupg-2.0.16-tests-s2kcount.patch
 Patch3:  gnupg-2.0.14-secmem.patch
 
@@ -75,7 +74,6 @@ to the base GnuPG package
 %prep
 %setup -q -n gnupg-%{version}
 
-%patch1 -p1 -b .insttools
 %patch2 -p1 -b .s2k
 %patch3 -p1 -b .secmem
 %patch100 -p1 -b .gpgsm_realloc
@@ -117,13 +115,6 @@ touch %{buildroot}%{_sysconfdir}/gnupg/gpgconf.conf
 install -m644 -p AUTHORS COPYING ChangeLog NEWS THANKS TODO \
   %{buildroot}%{_docdir}/%{name}-%{version}/
 
-# compat symlinks (these need to go away when/if gnupg1 review passes)
-ln -sf gpg2 %{buildroot}%{_bindir}/gpg
-ln -sf gpgv2 %{buildroot}%{_bindir}/gpgv
-ln -sf gpg2.1 %{buildroot}%{_mandir}/man1/gpg.1
-ln -sf gpgv2.1 %{buildroot}%{_mandir}/man1/gpgv.1
-
-
 # info dir
 rm -f %{buildroot}%{_infodir}/dir
 
@@ -154,15 +145,11 @@ fi
 #attr(4755,root,root) %{_bindir}/gpg2
 %{_bindir}/gpg2
 %{_bindir}/gpgv2
-%{_bindir}/gpg
-%{_bindir}/gpgv
 %{_bindir}/gpg-connect-agent
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
 %{_bindir}/gpgkey2ssh
 %{_bindir}/gpgparsemail
-%{_bindir}/gpgsplit
-%{_bindir}/gpg-zip
 %{_bindir}/watchgnupg
 %{_sbindir}/*
 %{_datadir}/gnupg/
@@ -188,6 +175,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Aug 13 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.16-2
+- drop the compat symlinks as gnupg-1.x is revived
+
 * Tue Jul 27 2010 Rex Dieter <rdieter@fedoraproject.org> - 2.0.16-1
 - gnupg-2.0.16
 
