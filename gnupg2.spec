@@ -2,7 +2,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.16
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -40,12 +40,6 @@ BuildRequires: zlib-devel
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 Requires(hint): pinentry
-
-# pgp-tools, perl-GnuPG-Interface requires 'gpg' (not sure why) -- Rex
-Provides: gpg = %{version}-%{release}
-# Obsolete GnuPG-1 package
-Provides: gnupg = %{version}-%{release}
-Obsoletes: gnupg <= 1.4.10
 
 %package smime
 Summary: CMS encryption and signing tool and smart card support for GnuPG
@@ -104,6 +98,9 @@ rm -rf %{buildroot}
 make install DESTDIR=%{buildroot} \
   INSTALL="install -p" \
   docdir=%{_docdir}/%{name}-%{version}
+
+# drop file conflicting with gnupg-1.x
+rm -f %{buildroot}%{_mandir}/man1/gpg-zip.1*
 
 %find_lang %{name}
 
@@ -175,6 +172,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Aug 17 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.16-3
+- drop the provides/obsoletes for gnupg
+- drop the man page file conflicting with gnupg-1.x
+
 * Fri Aug 13 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.16-2
 - drop the compat symlinks as gnupg-1.x is revived
 
