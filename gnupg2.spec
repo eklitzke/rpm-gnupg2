@@ -1,8 +1,8 @@
 
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.16
-Release: 3%{?dist}
+Version: 2.0.17
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -15,11 +15,6 @@ Patch3:  gnupg-2.0.14-secmem.patch
 
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-## upstream patches
-# Security Alert for GnuPG 2.0 - Realloc bug in GPGSM
-# http://lists.gnupg.org/pipermail/gnupg-announce/2010q3/000302.html
-Patch100: gnupg-2.0.16-gpgsm_realloc.patch
 
 #BuildRequires: automake libtool texinfo transfig
 BuildRequires: bzip2-devel
@@ -39,13 +34,12 @@ BuildRequires: zlib-devel
 
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
-Requires(hint): pinentry
+Requires: pinentry
 
 %package smime
 Summary: CMS encryption and signing tool and smart card support for GnuPG
 Requires: gnupg2 = %{version}-%{release}
 Group: Applications/Internet
-Requires(hint): dirmngr
 
 
 %description
@@ -70,7 +64,6 @@ to the base GnuPG package
 
 %patch2 -p1 -b .s2k
 %patch3 -p1 -b .secmem
-%patch100 -p1 -b .gpgsm_realloc
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -172,6 +165,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Jan 20 2011 Tomas Mraz <tmraz@redhat.com> - 2.0.17-1
+- new upstream release (#669611)
+
 * Tue Aug 17 2010 Tomas Mraz <tmraz@redhat.com> - 2.0.16-3
 - drop the provides/obsoletes for gnupg
 - drop the man page file conflicting with gnupg-1.x
