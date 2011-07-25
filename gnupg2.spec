@@ -1,8 +1,7 @@
-
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.17
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -12,6 +11,8 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 #Source0: gnupg2-20090809svn.tar.bz2
 Patch2:  gnupg-2.0.16-tests-s2kcount.patch
 Patch3:  gnupg-2.0.14-secmem.patch
+# This is already in upstream sources
+Patch4:  gnupg-2.0.17-libgcrypt-mpi.patch
 
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -64,6 +65,7 @@ to the base GnuPG package
 
 %patch2 -p1 -b .s2k
 %patch3 -p1 -b .secmem
+%patch4 -p1 -b .mpi
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -165,6 +167,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Jul 25 2011 Tomas Mraz <tmraz@redhat.com> - 2.0.17-2
+- fix a bug that shows up with the new libgcrypt release (#725369)
+
 * Thu Jan 20 2011 Tomas Mraz <tmraz@redhat.com> - 2.0.17-1
 - new upstream release (#669611)
 
