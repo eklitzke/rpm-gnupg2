@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.17
-Release: 2%{?dist}
+Version: 2.0.18
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -10,7 +10,7 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
 Patch2:  gnupg-2.0.16-tests-s2kcount.patch
-Patch3:  gnupg-2.0.14-secmem.patch
+Patch3:  gnupg-2.0.18-secmem.patch
 # This is already in upstream sources
 Patch4:  gnupg-2.0.17-libgcrypt-mpi.patch
 
@@ -167,6 +167,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Aug 17 2011 Tomas Mraz <tmraz@redhat.com> - 2.0.18-1
+- new upstream release (#728481)
+
 * Mon Jul 25 2011 Tomas Mraz <tmraz@redhat.com> - 2.0.17-2
 - fix a bug that shows up with the new libgcrypt release (#725369)
 
