@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.18
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -75,13 +75,13 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
 %build
 
 %configure \
-  --disable-rpath
+  --disable-rpath \
+  --enable-standard-socket
 
 # need scratch gpg database for tests
 mkdir -p $HOME/.gnupg
 
-# not smp-safe
-make
+make %{?_smp_mflags}
 
 
 %install
@@ -164,6 +164,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Oct 12 2011 Rex Dieter <rdieter@fedoraproject.org> 2.0.18-2
+- build with --enable-standard-socket
+
 * Wed Aug 17 2011 Tomas Mraz <tmraz@redhat.com> - 2.0.18-1
 - new upstream release (#728481)
 
