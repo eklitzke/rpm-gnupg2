@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.18
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -164,6 +164,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.18-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Wed Oct 12 2011 Rex Dieter <rdieter@fedoraproject.org> 2.0.18-2
 - build with --enable-standard-socket
 
