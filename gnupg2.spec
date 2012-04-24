@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.18
-Release: 3%{?dist}
+Version: 2.0.19
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -11,6 +11,8 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 #Source0: gnupg2-20090809svn.tar.bz2
 Patch2:  gnupg-2.0.16-tests-s2kcount.patch
 Patch3:  gnupg-2.0.18-secmem.patch
+Patch4:  gnupg-2.0.18-protect-tool-env.patch
+Patch5:  gnupg-2.0.16-ocsp-keyusage.patch
 
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -63,6 +65,8 @@ to the base GnuPG package
 
 %patch2 -p1 -b .s2k
 %patch3 -p1 -b .secmem
+%patch4 -p1 -b .ptool-env
+%patch5 -p1 -b .keyusage
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -164,6 +168,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Apr 24 2012 Tomas Mraz <tmraz@redhat.com> - 2.0.19-1
+- new upstream release
+- set environment in protect-tool (#548528)
+- do not reject OCSP signing certs without keyUsage (#720174)
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.18-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
