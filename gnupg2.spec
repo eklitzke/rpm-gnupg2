@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.19
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -9,6 +9,7 @@ Source0: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2.sig
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
+Patch1:  gnupg-2.0.13-insttools.patch
 Patch2:  gnupg-2.0.16-tests-s2kcount.patch
 Patch3:  gnupg-2.0.18-secmem.patch
 Patch4:  gnupg-2.0.18-protect-tool-env.patch
@@ -37,6 +38,14 @@ Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 Requires: pinentry
 
+%if 0%{?rhel} > 5
+# pgp-tools, perl-GnuPG-Interface requires 'gpg' (not sure why) -- Rex
+Provides: gpg = %{version}-%{release}
+# Obsolete GnuPG-1 package
+Provides: gnupg = %{version}-%{release}
+Obsoletes: gnupg <= 1.4.10
+%endif
+
 %package smime
 Summary: CMS encryption and signing tool and smart card support for GnuPG
 Requires: gnupg2 = %{version}-%{release}
@@ -63,6 +72,9 @@ to the base GnuPG package
 %prep
 %setup -q -n gnupg-%{version}
 
+%if 0%{?rhel} > 5
+%patch1 -p1 -b .insttools
+%endif
 %patch2 -p1 -b .s2k
 %patch3 -p1 -b .secmem
 %patch4 -p1 -b .ptool-env
@@ -95,8 +107,10 @@ make install DESTDIR=%{buildroot} \
   INSTALL="install -p" \
   docdir=%{_docdir}/%{name}-%{version}
 
+%if ! 0%{?rhel} > 5
 # drop file conflicting with gnupg-1.x
 rm -f %{buildroot}%{_mandir}/man1/gpg-zip.1*
+%endif
 
 %find_lang %{name}
 
@@ -107,6 +121,14 @@ touch %{buildroot}%{_sysconfdir}/gnupg/gpgconf.conf
 # more docs
 install -m644 -p AUTHORS COPYING ChangeLog NEWS THANKS TODO \
   %{buildroot}%{_docdir}/%{name}-%{version}/
+
+%if 0%{?rhel} > 5
+# compat symlinks
+ln -sf gpg2 %{buildroot}%{_bindir}/gpg
+ln -sf gpgv2 %{buildroot}%{_bindir}/gpgv
+ln -sf gpg2.1 %{buildroot}%{_mandir}/man1/gpg.1
+ln -sf gpgv2.1 %{buildroot}%{_mandir}/man1/gpgv.1
+%endif
 
 # info dir
 rm -f %{buildroot}%{_infodir}/dir
@@ -143,6 +165,12 @@ fi
 %{_bindir}/gpgconf
 %{_bindir}/gpgkey2ssh
 %{_bindir}/gpgparsemail
+%if 0%{?rhel} > 5
+%{_bindir}/gpg
+%{_bindir}/gpgv
+%{_bindir}/gpgsplit
+%{_bindir}/gpg-zip
+%endif
 %{_bindir}/watchgnupg
 %{_sbindir}/*
 %{_datadir}/gnupg/
@@ -168,6 +196,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Jul 25 2012 Tomas Mraz <tmraz@redhat.com> - 2.0.19-3
+- add compat symlinks and provides if built on RHEL
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.19-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
