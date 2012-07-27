@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.19
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -107,7 +107,7 @@ make install DESTDIR=%{buildroot} \
   INSTALL="install -p" \
   docdir=%{_docdir}/%{name}-%{version}
 
-%if ! 0%{?rhel} > 5
+%if ! (0%{?rhel} > 5)
 # drop file conflicting with gnupg-1.x
 rm -f %{buildroot}%{_mandir}/man1/gpg-zip.1*
 %endif
@@ -196,7 +196,10 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Thu Jul 25 2012 Tomas Mraz <tmraz@redhat.com> - 2.0.19-3
+* Fri Jul 27 2012 Tomas Mraz <tmraz@redhat.com> - 2.0.19-4
+- fix negated condition (#843842)
+
+* Thu Jul 26 2012 Tomas Mraz <tmraz@redhat.com> - 2.0.19-3
 - add compat symlinks and provides if built on RHEL
 
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.19-2
