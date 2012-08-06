@@ -9,7 +9,7 @@ Source0: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2.sig
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
-Patch1:  gnupg-2.0.13-insttools.patch
+Patch1:  gnupg-2.0.19-insttools.patch
 Patch2:  gnupg-2.0.16-tests-s2kcount.patch
 Patch3:  gnupg-2.0.18-secmem.patch
 Patch4:  gnupg-2.0.18-protect-tool-env.patch
