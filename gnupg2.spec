@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.19
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -196,6 +196,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Nov 16 2012 Jamie Nguyen <jamielinux@fedoraproject.org> - 2.0.19-5
+- rebuild for <f18 (#877106)
+
 * Fri Jul 27 2012 Tomas Mraz <tmraz@redhat.com> - 2.0.19-4
 - fix negated condition (#843842)
 
