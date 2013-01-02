@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.19
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -15,6 +15,7 @@ Patch3:  gnupg-2.0.18-secmem.patch
 Patch4:  gnupg-2.0.18-protect-tool-env.patch
 Patch5:  gnupg-2.0.16-ocsp-keyusage.patch
 Patch6:  gnupg-2.0.19-fips-algo.patch
+Patch7:  gnupg-2.0.19-cve-2012-6085.patch
 
 URL:     http://www.gnupg.org/
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -81,6 +82,7 @@ to the base GnuPG package
 %patch4 -p1 -b .ptool-env
 %patch5 -p1 -b .keyusage
 %patch6 -p1 -b .fips
+%patch7 -p1 -b .valid-packet
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -198,6 +200,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Jan  2 2013 Tomas Mraz <tmraz@redhat.com> - 2.0.19-7
+- fix CVE-2012-6085 - skip invalid key packets (#891142)
+
 * Thu Nov 22 2012 Tomas Mraz <tmraz@redhat.com> - 2.0.19-6
 - use AES as default crypto algorithm in FIPS mode (#879047)
 
