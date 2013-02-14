@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.19
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -200,6 +200,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.19-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Wed Jan  2 2013 Tomas Mraz <tmraz@redhat.com> - 2.0.19-7
 - fix CVE-2012-6085 - skip invalid key packets (#891142)
 
