@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.19
-Release: 8%{?dist}
+Version: 2.0.20
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -10,15 +10,12 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
 Patch1:  gnupg-2.0.19-insttools.patch
-Patch2:  gnupg-2.0.16-tests-s2kcount.patch
-Patch3:  gnupg-2.0.18-secmem.patch
+Patch3:  gnupg-2.0.20-secmem.patch
 Patch4:  gnupg-2.0.18-protect-tool-env.patch
-Patch5:  gnupg-2.0.16-ocsp-keyusage.patch
+Patch5:  gnupg-2.0.20-ocsp-keyusage.patch
 Patch6:  gnupg-2.0.19-fips-algo.patch
-Patch7:  gnupg-2.0.19-cve-2012-6085.patch
 
 URL:     http://www.gnupg.org/
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 #BuildRequires: automake libtool texinfo transfig
 BuildRequires: bzip2-devel
@@ -77,12 +74,10 @@ to the base GnuPG package
 %if 0%{?rhel} > 5
 %patch1 -p1 -b .insttools
 %endif
-%patch2 -p1 -b .s2k
 %patch3 -p1 -b .secmem
 %patch4 -p1 -b .ptool-env
 %patch5 -p1 -b .keyusage
 %patch6 -p1 -b .fips
-%patch7 -p1 -b .valid-packet
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -105,8 +100,6 @@ make %{?_smp_mflags}
 
 
 %install
-rm -rf %{buildroot}
-
 make install DESTDIR=%{buildroot} \
   INSTALL="install -p" \
   docdir=%{_docdir}/%{name}-%{version}
@@ -184,22 +177,22 @@ fi
 %exclude %{_datadir}/gnupg/com-certs.pem
 %exclude %{_mandir}/man?/gpgsm*
 %exclude %{_mandir}/man?/scdaemon*
+%exclude %{_libexecdir}/scdaemon
 
 %files smime
 %defattr(-,root,root,-)
 %{_bindir}/gpgsm*
 %{_bindir}/kbxutil
-%{_bindir}/scdaemon
+%{_libexecdir}/scdaemon
 %{_mandir}/man?/gpgsm*
 %{_mandir}/man?/scdaemon*
 %{_datadir}/gnupg/com-certs.pem
 
 
-%clean
-rm -rf %{buildroot}
-
-
 %changelog
+* Wed May 15 2013 Tomas Mraz <tmraz@redhat.com> - 2.0.20-1
+- new upstream release
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.19-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
