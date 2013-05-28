@@ -160,13 +160,14 @@ fi
 %{_bindir}/gpg-connect-agent
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
-%{_bindir}/gpgkey2ssh
 %{_bindir}/gpgparsemail
 %if 0%{?rhel} > 5
 %{_bindir}/gpg
 %{_bindir}/gpgv
 %{_bindir}/gpgsplit
 %{_bindir}/gpg-zip
+%else
+%{_bindir}/gpgkey2ssh
 %endif
 %{_bindir}/watchgnupg
 %{_sbindir}/*
