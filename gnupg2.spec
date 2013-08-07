@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.20
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -44,6 +44,8 @@ Provides: gpg = %{version}-%{release}
 Provides: gnupg = %{version}-%{release}
 Obsoletes: gnupg <= 1.4.10
 %endif
+
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 %package smime
 Summary: CMS encryption and signing tool and smart card support for GnuPG
@@ -102,7 +104,7 @@ make %{?_smp_mflags}
 %install
 make install DESTDIR=%{buildroot} \
   INSTALL="install -p" \
-  docdir=%{_docdir}/%{name}-%{version}
+  docdir=%{_pkgdocdir}
 
 %if ! (0%{?rhel} > 5)
 # drop file conflicting with gnupg-1.x
@@ -117,7 +119,7 @@ touch %{buildroot}%{_sysconfdir}/gnupg/gpgconf.conf
 
 # more docs
 install -m644 -p AUTHORS COPYING ChangeLog NEWS THANKS TODO \
-  %{buildroot}%{_docdir}/%{name}-%{version}/
+  %{buildroot}%{_pkgdocdir}
 
 %if 0%{?rhel} > 5
 # compat symlinks
@@ -150,7 +152,7 @@ fi
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 #doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
-%{_docdir}/%{name}-%{version}/
+%{_pkgdocdir}
 %dir %{_sysconfdir}/gnupg
 %ghost %config(noreplace) %{_sysconfdir}/gnupg/gpgconf.conf
 ## docs say to install suid root, but fedora/rh security folk say not to
@@ -191,6 +193,9 @@ fi
 
 
 %changelog
+* Wed Aug  7 2013 Tomas Mraz <tmraz@redhat.com> - 2.0.20-3
+- adjust to the unversioned docdir change (#993785)
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.20-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
