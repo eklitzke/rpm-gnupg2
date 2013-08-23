@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.20
-Release: 3%{?dist}
+Version: 2.0.21
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -193,6 +193,9 @@ fi
 
 
 %changelog
+* Fri Aug 23 2013 Tomáš Mráz <tmraz@redhat.com> - 2.0.21-1
+- new upstream release
+
 * Wed Aug  7 2013 Tomas Mraz <tmraz@redhat.com> - 2.0.20-3
 - adjust to the unversioned docdir change (#993785)
 
