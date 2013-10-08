@@ -1,6 +1,6 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.21
+Version: 2.0.22
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -193,6 +193,9 @@ fi
 
 
 %changelog
+* Tue Oct  8 2013 Tomáš Mráz <tmraz@redhat.com> - 2.0.22-1
+- new upstream release fixing CVE-2013-4402
+
 * Fri Aug 23 2013 Tomáš Mráz <tmraz@redhat.com> - 2.0.21-1
 - new upstream release
 
@@ -524,7 +527,7 @@ fi
 * Sat May  7 2005 David Woodhouse <dwmw2@infradead.org> 1.9.15-3
 - Rebuild.
 
-* Fri Apr  7 2005 Michael Schwendt <mschwendt[AT]users.sf.net>
+* Thu Apr  7 2005 Michael Schwendt <mschwendt[AT]users.sf.net>
 - rebuilt
 
 * Tue Feb  1 2005 Michael Schwendt <mschwendt[AT]users.sf.net> - 0:1.9.15-1
