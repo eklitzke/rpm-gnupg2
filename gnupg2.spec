@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.22
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -193,6 +193,9 @@ fi
 
 
 %changelog
+* Tue Mar  4 2014 Tomáš Mráz <tmraz@redhat.com> - 2.0.22-2
+- rebuilt against new libgcrypt
+
 * Tue Oct  8 2013 Tomáš Mráz <tmraz@redhat.com> - 2.0.22-1
 - new upstream release fixing CVE-2013-4402
 
