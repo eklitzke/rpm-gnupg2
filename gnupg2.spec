@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.22
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -193,6 +193,9 @@ fi
 
 
 %changelog
+* Wed May  7 2014 Tomáš Mráz <tmraz@redhat.com> - 2.0.22-3
+- do not dump core if hash algorithm not available in the FIPS mode
+
 * Tue Mar  4 2014 Tomáš Mráz <tmraz@redhat.com> - 2.0.22-2
 - rebuilt against new libgcrypt
 
