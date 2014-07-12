@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.24
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -118,7 +118,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/gnupg
 touch %{buildroot}%{_sysconfdir}/gnupg/gpgconf.conf
 
 # more docs
-install -m644 -p AUTHORS COPYING ChangeLog NEWS THANKS TODO \
+install -m644 -p AUTHORS ChangeLog NEWS THANKS TODO \
   %{buildroot}%{_pkgdocdir}
 
 %if 0%{?rhel} > 5
@@ -151,7 +151,9 @@ fi
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-#doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%{!?_licensedir:%global license %%doc}
+%license COPYING
+#doc AUTHORS ChangeLog NEWS README THANKS TODO
 %{_pkgdocdir}
 %dir %{_sysconfdir}/gnupg
 %ghost %config(noreplace) %{_sysconfdir}/gnupg/gpgconf.conf
@@ -193,6 +195,9 @@ fi
 
 
 %changelog
+* Sat Jul 12 2014 Tom Callaway <spot@fedoraproject.org> - 2.0.24-2
+- fix license handling
+
 * Wed Jun 25 2014 Tomáš Mráz <tmraz@redhat.com> - 2.0.24-1
 - new upstream release fixing CVE-2014-4617
 
