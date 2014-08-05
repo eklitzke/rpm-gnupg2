@@ -1,6 +1,6 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.24
+Version: 2.0.25
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -11,7 +11,6 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 #Source0: gnupg2-20090809svn.tar.bz2
 Patch1:  gnupg-2.0.20-insttools.patch
 Patch3:  gnupg-2.0.20-secmem.patch
-Patch4:  gnupg-2.0.18-protect-tool-env.patch
 Patch5:  gnupg-2.0.20-ocsp-keyusage.patch
 Patch6:  gnupg-2.0.19-fips-algo.patch
 
@@ -77,7 +76,6 @@ to the base GnuPG package
 %patch1 -p1 -b .insttools
 %endif
 %patch3 -p1 -b .secmem
-%patch4 -p1 -b .ptool-env
 %patch5 -p1 -b .keyusage
 %patch6 -p1 -b .fips
 
@@ -193,6 +191,9 @@ fi
 
 
 %changelog
+* Tue Aug  5 2014 Tomáš Mráz <tmraz@redhat.com> - 2.0.25-1
+- new upstream release fixing a minor regression introduced by the previous one
+
 * Wed Jun 25 2014 Tomáš Mráz <tmraz@redhat.com> - 2.0.24-1
 - new upstream release fixing CVE-2014-4617
 
