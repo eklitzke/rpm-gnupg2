@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.0.25
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -196,6 +196,9 @@ fi
 
 
 %changelog
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.25-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Tue Aug  5 2014 Tomáš Mráz <tmraz@redhat.com> - 2.0.25-1
 - new upstream release fixing a minor regression introduced by the previous one
 - add --file-is-digest option needed for copr
