@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.0.25
-Release: 2%{?dist}
+Version: 2.1.1
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -12,9 +12,9 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 Patch1:  gnupg-2.0.20-insttools.patch
 Patch3:  gnupg-2.0.20-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
-Patch4:  gnupg-2.0.25-file-is-digest.patch
-Patch5:  gnupg-2.0.20-ocsp-keyusage.patch
-Patch6:  gnupg-2.0.19-fips-algo.patch
+Patch4:  gnupg-2.1.1-file-is-digest.patch
+Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
+Patch6:  gnupg-2.1.1-fips-algo.patch
 
 URL:     http://www.gnupg.org/
 
@@ -23,14 +23,14 @@ BuildRequires: bzip2-devel
 BuildRequires: curl-devel
 BuildRequires: docbook-utils
 BuildRequires: gettext
-BuildRequires: libassuan-devel >= 2.0.0
-BuildRequires: libgcrypt-devel >= 1.4
-BuildRequires: libgpg-error-devel => 1.4
-BuildRequires: libksba-devel >= 1.0.2
+BuildRequires: libassuan-devel >= 2.1.0
+BuildRequires: libgcrypt-devel >= 1.6.0
+BuildRequires: libgpg-error-devel >= 1.16
+BuildRequires: libksba-devel >= 1.3.0
 BuildRequires: openldap-devel
 BuildRequires: libusb-devel
 BuildRequires: pcsc-lite-libs
-BuildRequires: pth-devel
+BuildRequires: npth-devel
 BuildRequires: readline-devel ncurses-devel
 BuildRequires: zlib-devel
 
@@ -45,6 +45,9 @@ Provides: gpg = %{version}-%{release}
 Provides: gnupg = %{version}-%{release}
 Obsoletes: gnupg <= 1.4.10
 %endif
+
+Provides: dirmngr = %{version}-%{release}
+Obsoletes: dirmngr < 1.2.0-1
 
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
@@ -87,13 +90,14 @@ to the base GnuPG package
 # it can use other implementations too (including non-pcsc ones).
 %global pcsclib %(basename $(ls -1 %{_libdir}/libpcsclite.so.? 2>/dev/null ) 2>/dev/null )
 
-sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/{scdaemon,pcsc-wrapper}.c
+sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/scdaemon.c
 
 
 %build
 
 %configure \
   --disable-rpath \
+  --disable-gpgtar \
   --enable-standard-socket
 
 # need scratch gpg database for tests
@@ -166,6 +170,9 @@ fi
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
 %{_bindir}/gpgparsemail
+%{_bindir}/g13
+%{_bindir}/dirmngr
+%{_bindir}/dirmngr-client
 %if 0%{?rhel} > 5
 %{_bindir}/gpg
 %{_bindir}/gpgv
@@ -196,6 +203,10 @@ fi
 
 
 %changelog
+* Thu Jan 29 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.1-1
+- new upstream release
+- this release now includes the dirmngr which is obsoleted as separate package
+
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.25-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
