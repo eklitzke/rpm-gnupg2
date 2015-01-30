@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -114,6 +114,8 @@ make install DESTDIR=%{buildroot} \
 %if ! (0%{?rhel} > 5)
 # drop file conflicting with gnupg-1.x
 rm -f %{buildroot}%{_mandir}/man1/gpg-zip.1*
+# and rename another
+rename gnupg gnupg2 %{buildroot}%{_mandir}/man7/gnupg.7*
 %endif
 
 %find_lang %{name}
@@ -132,6 +134,7 @@ ln -sf gpg2 %{buildroot}%{_bindir}/gpg
 ln -sf gpgv2 %{buildroot}%{_bindir}/gpgv
 ln -sf gpg2.1 %{buildroot}%{_mandir}/man1/gpg.1
 ln -sf gpgv2.1 %{buildroot}%{_mandir}/man1/gpgv.1
+ln -sf gnupg.7 %{buildroot}%{_mandir}/man7/gnupg2.7
 %endif
 
 # info dir
@@ -203,6 +206,9 @@ fi
 
 
 %changelog
+* Fri Jan 30 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.1-2
+- resolve conflict with gnupg by renaming conflicting manual page (#1187472)
+
 * Thu Jan 29 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.1-1
 - new upstream release
 - this release now includes the dirmngr which is obsoleted as separate package
