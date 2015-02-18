@@ -1,6 +1,6 @@
-diff -up gnupg-2.1.1/g10/gpg.c.file-is-digest gnupg-2.1.1/g10/gpg.c
---- gnupg-2.1.1/g10/gpg.c.file-is-digest	2015-01-29 16:56:43.043680964 +0100
-+++ gnupg-2.1.1/g10/gpg.c	2015-01-29 16:59:20.875250453 +0100
+diff -up gnupg-2.1.2/g10/gpg.c.file-is-digest gnupg-2.1.2/g10/gpg.c
+--- gnupg-2.1.2/g10/gpg.c.file-is-digest	2015-02-17 17:54:53.838469211 +0100
++++ gnupg-2.1.2/g10/gpg.c	2015-02-18 18:24:46.374201953 +0100
 @@ -349,6 +349,7 @@ enum cmd_and_opt_values
      oTTYtype,
      oLCctype,
@@ -17,7 +17,7 @@ diff -up gnupg-2.1.1/g10/gpg.c.file-is-digest gnupg-2.1.1/g10/gpg.c
  
    /* Aliases.  I constantly mistype these, and assume other people do
       as well. */
-@@ -2126,6 +2128,7 @@ main (int argc, char **argv)
+@@ -2128,6 +2130,7 @@ main (int argc, char **argv)
      set_homedir (default_homedir ());
      opt.passphrase_repeat = 1;
      opt.emit_version = 1; /* Limit to the major number.  */
@@ -25,7 +25,7 @@ diff -up gnupg-2.1.1/g10/gpg.c.file-is-digest gnupg-2.1.1/g10/gpg.c
  
      /* Check whether we have a config file on the command line.  */
      orig_argc = argc;
-@@ -2630,6 +2633,7 @@ main (int argc, char **argv)
+@@ -2632,6 +2635,7 @@ main (int argc, char **argv)
  	    opt.verify_options&=~VERIFY_SHOW_PHOTOS;
  	    break;
  	  case oPhotoViewer: opt.photo_viewer = pargs.r.ret_str; break;
@@ -33,9 +33,9 @@ diff -up gnupg-2.1.1/g10/gpg.c.file-is-digest gnupg-2.1.1/g10/gpg.c
  
  	  case oForceMDC: opt.force_mdc = 1; break;
  	  case oNoForceMDC: opt.force_mdc = 0; break;
-diff -up gnupg-2.1.1/g10/options.h.file-is-digest gnupg-2.1.1/g10/options.h
---- gnupg-2.1.1/g10/options.h.file-is-digest	2014-12-08 15:06:10.000000000 +0100
-+++ gnupg-2.1.1/g10/options.h	2015-01-29 16:56:43.046681031 +0100
+diff -up gnupg-2.1.2/g10/options.h.file-is-digest gnupg-2.1.2/g10/options.h
+--- gnupg-2.1.2/g10/options.h.file-is-digest	2015-01-28 09:24:33.000000000 +0100
++++ gnupg-2.1.2/g10/options.h	2015-02-17 17:54:53.840469255 +0100
 @@ -192,6 +192,7 @@ struct
    int no_auto_check_trustdb;
    int preserve_permissions;
@@ -44,10 +44,18 @@ diff -up gnupg-2.1.1/g10/options.h.file-is-digest gnupg-2.1.1/g10/options.h
    struct groupitem *grouplist;
    int mangle_dos_filenames;
    int enable_progress_filter;
-diff -up gnupg-2.1.1/g10/sign.c.file-is-digest gnupg-2.1.1/g10/sign.c
---- gnupg-2.1.1/g10/sign.c.file-is-digest	2014-12-15 09:44:05.000000000 +0100
-+++ gnupg-2.1.1/g10/sign.c	2015-01-29 17:12:20.820889554 +0100
-@@ -706,8 +706,12 @@ write_signature_packets (SK_LIST sk_list
+diff -up gnupg-2.1.2/g10/sign.c.file-is-digest gnupg-2.1.2/g10/sign.c
+--- gnupg-2.1.2/g10/sign.c.file-is-digest	2015-01-28 09:24:33.000000000 +0100
++++ gnupg-2.1.2/g10/sign.c	2015-02-18 18:24:44.989169317 +0100
+@@ -41,6 +41,7 @@
+ #include "pkglue.h"
+ #include "sysutils.h"
+ #include "call-agent.h"
++#include "host2net.h"
+ 
+ 
+ #ifdef HAVE_DOSISH_SYSTEM
+@@ -706,8 +707,12 @@ write_signature_packets (SK_LIST sk_list
            mk_notation_policy_etc (sig, NULL, pk);
          }
  
@@ -62,7 +70,7 @@ diff -up gnupg-2.1.1/g10/sign.c.file-is-digest gnupg-2.1.1/g10/sign.c
  
        rc = do_sign (pk, sig, md, hash_for (pk), cache_nonce);
        gcry_md_close (md);
-@@ -765,6 +769,8 @@ sign_file (ctrl_t ctrl, strlist_t filena
+@@ -765,6 +770,8 @@ sign_file (ctrl_t ctrl, strlist_t filena
      SK_LIST sk_rover = NULL;
      int multifile = 0;
      u32 duration=0;
@@ -71,7 +79,7 @@ diff -up gnupg-2.1.1/g10/sign.c.file-is-digest gnupg-2.1.1/g10/sign.c
  
      pfx = new_progress_context ();
      afx = new_armor_context ();
-@@ -781,7 +787,16 @@ sign_file (ctrl_t ctrl, strlist_t filena
+@@ -781,7 +788,16 @@ sign_file (ctrl_t ctrl, strlist_t filena
  	fname = NULL;
  
      if( fname && filenames->next && (!detached || encryptflag) )
@@ -89,7 +97,7 @@ diff -up gnupg-2.1.1/g10/sign.c.file-is-digest gnupg-2.1.1/g10/sign.c
  
      if(encryptflag==2
         && (rc=setup_symkey(&efx.symkey_s2k,&efx.symkey_dek)))
-@@ -802,7 +817,7 @@ sign_file (ctrl_t ctrl, strlist_t filena
+@@ -802,7 +818,7 @@ sign_file (ctrl_t ctrl, strlist_t filena
        goto leave;
  
      /* prepare iobufs */
@@ -98,7 +106,7 @@ diff -up gnupg-2.1.1/g10/sign.c.file-is-digest gnupg-2.1.1/g10/sign.c
  	inp = NULL; /* we do it later */
      else {
        inp = iobuf_open(fname);
-@@ -940,7 +955,7 @@ sign_file (ctrl_t ctrl, strlist_t filena
+@@ -940,7 +956,7 @@ sign_file (ctrl_t ctrl, strlist_t filena
      for (sk_rover = sk_list; sk_rover; sk_rover = sk_rover->next)
        gcry_md_enable (mfx.md, hash_for (sk_rover->pk));
  
@@ -107,7 +115,7 @@ diff -up gnupg-2.1.1/g10/sign.c.file-is-digest gnupg-2.1.1/g10/sign.c
  	iobuf_push_filter( inp, md_filter, &mfx );
  
      if( detached && !encryptflag)
-@@ -995,6 +1010,8 @@ sign_file (ctrl_t ctrl, strlist_t filena
+@@ -995,6 +1011,8 @@ sign_file (ctrl_t ctrl, strlist_t filena
  
      write_status_begin_signing (mfx.md);
  
@@ -116,7 +124,7 @@ diff -up gnupg-2.1.1/g10/sign.c.file-is-digest gnupg-2.1.1/g10/sign.c
      /* Setup the inner packet. */
      if( detached ) {
  	if( multifile ) {
-@@ -1035,6 +1052,45 @@ sign_file (ctrl_t ctrl, strlist_t filena
+@@ -1035,6 +1053,45 @@ sign_file (ctrl_t ctrl, strlist_t filena
  	    if( opt.verbose )
  		putc( '\n', stderr );
  	}
@@ -157,12 +165,12 @@ diff -up gnupg-2.1.1/g10/sign.c.file-is-digest gnupg-2.1.1/g10/sign.c
 +	    sigclass = ts[0];
 +	    if (sigclass != 0x00 && sigclass != 0x01)
 +		log_bug("bad cipher class\n");
-+	    timestamp = buffer_to_u32(ts + 1);
++	    timestamp = buf32_to_u32(ts + 1);
 +	}
  	else {
  	    /* read, so that the filter can calculate the digest */
  	    while( iobuf_get(inp) != -1 )
-@@ -1052,8 +1108,8 @@ sign_file (ctrl_t ctrl, strlist_t filena
+@@ -1052,8 +1109,8 @@ sign_file (ctrl_t ctrl, strlist_t filena
  
      /* write the signatures */
      rc = write_signature_packets (sk_list, out, mfx.md,

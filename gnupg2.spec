@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.1
-Release: 2%{?dist}
+Version: 2.1.2
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -12,7 +12,7 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 Patch1:  gnupg-2.0.20-insttools.patch
 Patch3:  gnupg-2.0.20-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
-Patch4:  gnupg-2.1.1-file-is-digest.patch
+Patch4:  gnupg-2.1.2-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
 
@@ -206,6 +206,9 @@ fi
 
 
 %changelog
+* Wed Feb 18 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.2-1
+- new upstream release fixing two minor security issues
+
 * Fri Jan 30 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.1-2
 - resolve conflict with gnupg by renaming conflicting manual page (#1187472)
 
