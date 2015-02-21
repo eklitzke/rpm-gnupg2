@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -206,6 +206,10 @@ fi
 
 
 %changelog
+* Sat Feb 21 2015 Till Maas <opensource@till.name> - 2.1.2-2
+- Rebuilt for Fedora 23 Change
+  https://fedoraproject.org/wiki/Changes/Harden_all_packages_with_position-independent_code
+
 * Wed Feb 18 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.2-1
 - new upstream release fixing two minor security issues
 
