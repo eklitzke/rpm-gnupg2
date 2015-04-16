@@ -1,7 +1,7 @@
-diff -up gnupg-2.1.2/g10/gpg.c.file-is-digest gnupg-2.1.2/g10/gpg.c
---- gnupg-2.1.2/g10/gpg.c.file-is-digest	2015-02-17 17:54:53.838469211 +0100
-+++ gnupg-2.1.2/g10/gpg.c	2015-02-18 18:24:46.374201953 +0100
-@@ -349,6 +349,7 @@ enum cmd_and_opt_values
+diff -up gnupg-2.1.3/g10/gpg.c.file-is-digest gnupg-2.1.3/g10/gpg.c
+--- gnupg-2.1.3/g10/gpg.c.file-is-digest	2015-04-16 17:54:20.327168135 +0200
++++ gnupg-2.1.3/g10/gpg.c	2015-04-16 17:54:20.330168205 +0200
+@@ -352,6 +352,7 @@ enum cmd_and_opt_values
      oTTYtype,
      oLCctype,
      oLCmessages,
@@ -9,7 +9,7 @@ diff -up gnupg-2.1.2/g10/gpg.c.file-is-digest gnupg-2.1.2/g10/gpg.c
      oXauthority,
      oGroup,
      oUnGroup,
-@@ -730,6 +731,7 @@ static ARGPARSE_OPTS opts[] = {
+@@ -738,6 +739,7 @@ static ARGPARSE_OPTS opts[] = {
    ARGPARSE_s_s (oPersonalCompressPreferences,
                                           "personal-compress-preferences", "@"),
    ARGPARSE_s_s (oFakedSystemTime, "faked-system-time", "@"),
@@ -17,7 +17,7 @@ diff -up gnupg-2.1.2/g10/gpg.c.file-is-digest gnupg-2.1.2/g10/gpg.c
  
    /* Aliases.  I constantly mistype these, and assume other people do
       as well. */
-@@ -2128,6 +2130,7 @@ main (int argc, char **argv)
+@@ -2149,6 +2151,7 @@ main (int argc, char **argv)
      set_homedir (default_homedir ());
      opt.passphrase_repeat = 1;
      opt.emit_version = 1; /* Limit to the major number.  */
@@ -25,7 +25,7 @@ diff -up gnupg-2.1.2/g10/gpg.c.file-is-digest gnupg-2.1.2/g10/gpg.c
  
      /* Check whether we have a config file on the command line.  */
      orig_argc = argc;
-@@ -2632,6 +2635,7 @@ main (int argc, char **argv)
+@@ -2661,6 +2664,7 @@ main (int argc, char **argv)
  	    opt.verify_options&=~VERIFY_SHOW_PHOTOS;
  	    break;
  	  case oPhotoViewer: opt.photo_viewer = pargs.r.ret_str; break;
@@ -33,10 +33,10 @@ diff -up gnupg-2.1.2/g10/gpg.c.file-is-digest gnupg-2.1.2/g10/gpg.c
  
  	  case oForceMDC: opt.force_mdc = 1; break;
  	  case oNoForceMDC: opt.force_mdc = 0; break;
-diff -up gnupg-2.1.2/g10/options.h.file-is-digest gnupg-2.1.2/g10/options.h
---- gnupg-2.1.2/g10/options.h.file-is-digest	2015-01-28 09:24:33.000000000 +0100
-+++ gnupg-2.1.2/g10/options.h	2015-02-17 17:54:53.840469255 +0100
-@@ -192,6 +192,7 @@ struct
+diff -up gnupg-2.1.3/g10/options.h.file-is-digest gnupg-2.1.3/g10/options.h
+--- gnupg-2.1.3/g10/options.h.file-is-digest	2015-04-06 13:41:53.000000000 +0200
++++ gnupg-2.1.3/g10/options.h	2015-04-16 17:54:20.330168205 +0200
+@@ -194,6 +194,7 @@ struct
    int no_auto_check_trustdb;
    int preserve_permissions;
    int no_homedir_creation;
@@ -44,9 +44,9 @@ diff -up gnupg-2.1.2/g10/options.h.file-is-digest gnupg-2.1.2/g10/options.h
    struct groupitem *grouplist;
    int mangle_dos_filenames;
    int enable_progress_filter;
-diff -up gnupg-2.1.2/g10/sign.c.file-is-digest gnupg-2.1.2/g10/sign.c
---- gnupg-2.1.2/g10/sign.c.file-is-digest	2015-01-28 09:24:33.000000000 +0100
-+++ gnupg-2.1.2/g10/sign.c	2015-02-18 18:24:44.989169317 +0100
+diff -up gnupg-2.1.3/g10/sign.c.file-is-digest gnupg-2.1.3/g10/sign.c
+--- gnupg-2.1.3/g10/sign.c.file-is-digest	2015-04-05 19:43:32.000000000 +0200
++++ gnupg-2.1.3/g10/sign.c	2015-04-16 17:56:08.764693096 +0200
 @@ -41,6 +41,7 @@
  #include "pkglue.h"
  #include "sysutils.h"
@@ -126,7 +126,7 @@ diff -up gnupg-2.1.2/g10/sign.c.file-is-digest gnupg-2.1.2/g10/sign.c
  	if( multifile ) {
 @@ -1035,6 +1053,45 @@ sign_file (ctrl_t ctrl, strlist_t filena
  	    if( opt.verbose )
- 		putc( '\n', stderr );
+               log_printf ("\n");
  	}
 +	else if (opt.file_is_digest) {
 +	    byte *mdb, ts[5];

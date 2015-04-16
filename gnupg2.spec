@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.2
-Release: 2%{?dist}
+Version: 2.1.3
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -12,7 +12,7 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 Patch1:  gnupg-2.0.20-insttools.patch
 Patch3:  gnupg-2.0.20-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
-Patch4:  gnupg-2.1.2-file-is-digest.patch
+Patch4:  gnupg-2.1.3-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
 
@@ -115,7 +115,7 @@ make install DESTDIR=%{buildroot} \
 # drop file conflicting with gnupg-1.x
 rm -f %{buildroot}%{_mandir}/man1/gpg-zip.1*
 # and rename another
-rename gnupg gnupg2 %{buildroot}%{_mandir}/man7/gnupg.7*
+rename gnupg.7 gnupg2.7 %{buildroot}%{_mandir}/man7/gnupg.7*
 %endif
 
 %find_lang %{name}
@@ -206,6 +206,9 @@ fi
 
 
 %changelog
+* Thu Apr 16 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.3-1
+- new upstream release fixing minor bugs
+
 * Sat Feb 21 2015 Till Maas <opensource@till.name> - 2.1.2-2
 - Rebuilt for Fedora 23 Change
   https://fedoraproject.org/wiki/Changes/Harden_all_packages_with_position-independent_code
