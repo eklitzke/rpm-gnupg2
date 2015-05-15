@@ -1,6 +1,6 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.3
+Version: 2.1.4
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -206,6 +206,9 @@ fi
 
 
 %changelog
+* Fri May 15 2015 Robert Scheck <robert@fedoraproject.org> - 2.1.4-1
+- upgrade to 2.1.4 (#1192353)
+
 * Thu Apr 16 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.3-1
 - new upstream release fixing minor bugs
 
