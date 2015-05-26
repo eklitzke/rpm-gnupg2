@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -33,6 +33,7 @@ BuildRequires: pcsc-lite-libs
 BuildRequires: npth-devel
 BuildRequires: readline-devel ncurses-devel
 BuildRequires: zlib-devel
+BuildRequires: gnutls-devel
 
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
@@ -206,6 +207,9 @@ fi
 
 
 %changelog
+* Tue May 26 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.4-2
+- use gnutls for TLS support in dirmngr (#1224816)
+
 * Fri May 15 2015 Robert Scheck <robert@fedoraproject.org> - 2.1.4-1
 - upgrade to 2.1.4 (#1192353)
 
