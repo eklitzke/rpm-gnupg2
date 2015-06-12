@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.4
-Release: 2%{?dist}
+Version: 2.1.5
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -207,6 +207,9 @@ fi
 
 
 %changelog
+* Fri Jun 12 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.5-1
+- upgrade to 2.1.5
+
 * Tue May 26 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.4-2
 - use gnutls for TLS support in dirmngr (#1224816)
 
