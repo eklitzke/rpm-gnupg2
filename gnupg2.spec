@@ -1,6 +1,6 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.9
+Version: 2.1.10
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -10,11 +10,13 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
 Patch1:  gnupg-2.0.20-insttools.patch
-Patch3:  gnupg-2.0.20-secmem.patch
+# needed for compatibility with system FIPS mode
+Patch3:  gnupg-2.1.10-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
-Patch4:  gnupg-2.1.3-file-is-digest.patch
+Patch4:  gnupg-2.1.10-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
+Patch7:  gnupg-2.1.10-build.patch
 
 URL:     http://www.gnupg.org/
 
@@ -34,6 +36,8 @@ BuildRequires: npth-devel
 BuildRequires: readline-devel ncurses-devel
 BuildRequires: zlib-devel
 BuildRequires: gnutls-devel
+BuildRequires: sqlite-devel
+BuildRequires: fuse
 
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
@@ -85,6 +89,7 @@ to the base GnuPG package
 %patch4 -p1 -b .file-is-digest
 %patch5 -p1 -b .keyusage
 %patch6 -p1 -b .fips
+%patch7 -p1 -b .build
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -99,6 +104,7 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/scdaemon.c
 %configure \
   --disable-rpath \
   --disable-gpgtar \
+  --enable-g13 \
   --enable-standard-socket
 
 # need scratch gpg database for tests
@@ -207,6 +213,9 @@ fi
 
 
 %changelog
+* Mon Dec  7 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.10-1
+- upgrade to 2.1.10
+
 * Mon Oct 12 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.9-1
 - upgrade to 2.1.9
 

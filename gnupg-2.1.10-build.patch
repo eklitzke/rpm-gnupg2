@@ -1,0 +1,56 @@
+diff -up gnupg-2.1.10/dirmngr/Makefile.am.build gnupg-2.1.10/dirmngr/Makefile.am
+--- gnupg-2.1.10/dirmngr/Makefile.am.build	2015-11-30 17:39:52.000000000 +0100
++++ gnupg-2.1.10/dirmngr/Makefile.am	2015-12-07 16:14:06.865576290 +0100
+@@ -131,7 +131,7 @@ endif
+ t_http_SOURCES = t-http.c http.c dns-stuff.c
+ t_http_CFLAGS  = -DWITHOUT_NPTH=1 \
+ 	         $(LIBGCRYPT_CFLAGS) $(NTBTLS_CFLAGS) $(LIBGNUTLS_CFLAGS) \
+-                 $(GPG_ERROR_CFLAGS)
++                 $(GPG_ERROR_CFLAGS) $(LIBASSUAN_CFLAGS)
+ t_http_LDADD   = $(t_common_ldadd) \
+ 	         $(NTBTLS_LIBS) $(LIBGNUTLS_LIBS) $(DNSLIBS)
+ 
+@@ -139,7 +139,7 @@ t_ldap_parse_uri_SOURCES = \
+ 	t-ldap-parse-uri.c ldap-parse-uri.c ldap-parse-uri.h \
+         http.c dns-stuff.c \
+         $(ldap_url) $(t_common_src)
+-t_ldap_parse_uri_CFLAGS = -DWITHOUT_NPTH=1
++t_ldap_parse_uri_CFLAGS = -DWITHOUT_NPTH=1 $(LIBASSUAN_CFLAGS)
+ t_ldap_parse_uri_LDADD = $(ldaplibs) $(t_common_ldadd) $(DNSLIBS)
+ 
+ t_dns_stuff_CFLAGS = -DWITHOUT_NPTH=1
+diff -up gnupg-2.1.10/dirmngr/Makefile.in.build gnupg-2.1.10/dirmngr/Makefile.in
+--- gnupg-2.1.10/dirmngr/Makefile.in.build	2015-12-04 10:57:05.000000000 +0100
++++ gnupg-2.1.10/dirmngr/Makefile.in	2015-12-07 16:14:06.866576314 +0100
+@@ -608,7 +608,7 @@ module_tests = t-dns-stuff $(am__append_
+ t_http_SOURCES = t-http.c http.c dns-stuff.c
+ t_http_CFLAGS = -DWITHOUT_NPTH=1 \
+ 	         $(LIBGCRYPT_CFLAGS) $(NTBTLS_CFLAGS) $(LIBGNUTLS_CFLAGS) \
+-                 $(GPG_ERROR_CFLAGS)
++                 $(GPG_ERROR_CFLAGS) $(LIBASSUAN_CFLAGS)
+ 
+ t_http_LDADD = $(t_common_ldadd) \
+ 	         $(NTBTLS_LIBS) $(LIBGNUTLS_LIBS) $(DNSLIBS)
+@@ -618,7 +618,7 @@ t_ldap_parse_uri_SOURCES = \
+         http.c dns-stuff.c \
+         $(ldap_url) $(t_common_src)
+ 
+-t_ldap_parse_uri_CFLAGS = -DWITHOUT_NPTH=1
++t_ldap_parse_uri_CFLAGS = -DWITHOUT_NPTH=1 $(LIBASSUAN_CFLAGS)
+ t_ldap_parse_uri_LDADD = $(ldaplibs) $(t_common_ldadd) $(DNSLIBS)
+ t_dns_stuff_CFLAGS = -DWITHOUT_NPTH=1
+ t_dns_stuff_SOURCES = t-dns-stuff.c dns-stuff.c
+diff -up gnupg-2.1.10/tests/openpgp/gpgtar.test.build gnupg-2.1.10/tests/openpgp/gpgtar.test
+--- gnupg-2.1.10/tests/openpgp/gpgtar.test.build	2015-11-30 17:39:52.000000000 +0100
++++ gnupg-2.1.10/tests/openpgp/gpgtar.test	2015-12-07 16:29:25.625224112 +0100
+@@ -30,6 +30,10 @@ GPGARGS="--trust-model=always"
+ GPGTAR="../../tools/gpgtar"
+ GPGZIP="sh ../../tools/gpg-zip"
+ 
++if [ ! -f "$GPGTAR" ] ; then
++    exit 77
++fi
++
+ for TOOL in "$GPGTAR" "$GPGZIP"
+ do
+     rm -rf -- "${TESTDIR}"
