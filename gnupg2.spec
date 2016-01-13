@@ -213,7 +213,7 @@ fi
 
 
 %changelog
-* Wed Jan 13 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.10-2
+* Wed Jan 13 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.10-2
 - rebase the insttools patch needed for full gpgv1 replacement
 
 * Mon Dec  7 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.10-1
