@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.10
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -213,6 +213,9 @@ fi
 
 
 %changelog
+* Wed Jan 13 2016 Dan Horák <dan[at]danny.cz> - 2.1.10-3
+- fix the insttools patch
+
 * Wed Jan 13 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.10-2
 - rebase the insttools patch needed for full gpgv1 replacement
 
