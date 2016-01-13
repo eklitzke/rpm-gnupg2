@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.10
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -9,7 +9,7 @@ Source0: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2.sig
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
-Patch1:  gnupg-2.0.20-insttools.patch
+Patch1:  gnupg-2.1.10-insttools.patch
 # needed for compatibility with system FIPS mode
 Patch3:  gnupg-2.1.10-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
@@ -213,6 +213,9 @@ fi
 
 
 %changelog
+* Wed Jan 13 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.10-2
+- rebase the insttools patch needed for full gpgv1 replacement
+
 * Mon Dec  7 2015 Tomáš Mráz <tmraz@redhat.com> - 2.1.10-1
 - upgrade to 2.1.10
 
