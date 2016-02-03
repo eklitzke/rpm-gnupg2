@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.10
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -213,6 +213,9 @@ fi
 
 
 %changelog
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.10-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Wed Jan 13 2016 Dan Horák <dan[at]danny.cz> - 2.1.10-3
 - fix the insttools patch
 
