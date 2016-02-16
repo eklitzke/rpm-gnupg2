@@ -55,7 +55,16 @@ diff -up gnupg-2.1.10/g10/sign.c.file-is-digest gnupg-2.1.10/g10/sign.c
  
  
  #ifdef HAVE_DOSISH_SYSTEM
-@@ -681,8 +682,12 @@ write_signature_packets (SK_LIST sk_list
+@@ -658,6 +659,8 @@ write_signature_packets (SK_LIST sk_list
+       if (duration || opt.sig_policy_url
+           || opt.sig_notations || opt.sig_keyserver_url)
+         sig->version = 4;
++	  else if (opt.file_is_digest)
++        sig->version = 3;
+       else
+         sig->version = pk->version;
+ 
+@@ -681,8 +684,10 @@ write_signature_packets (SK_LIST sk_list
            mk_notation_policy_etc (sig, NULL, pk);
          }
  
@@ -64,8 +73,6 @@ diff -up gnupg-2.1.10/g10/sign.c.file-is-digest gnupg-2.1.10/g10/sign.c
 +      if (!opt.file_is_digest) {
 +	hash_sigversion_to_magic (md, sig);
 +	gcry_md_final (md);
-+      } else if (sig->version >= 4) {
-+	log_bug("file-is-digest doesn't work with v4 sigs\n");
 +      }
  
        rc = do_sign (pk, sig, md, hash_for (pk), cache_nonce);

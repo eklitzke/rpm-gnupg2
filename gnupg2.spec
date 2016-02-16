@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.10
-Release: 4%{?dist}
+Version: 2.1.11
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -9,14 +9,15 @@ Source0: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2.sig
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
-Patch1:  gnupg-2.1.10-insttools.patch
+Patch1:  gnupg-2.1.11-insttools.patch
 # needed for compatibility with system FIPS mode
 Patch3:  gnupg-2.1.10-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
 Patch4:  gnupg-2.1.10-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
-Patch7:  gnupg-2.1.10-build.patch
+Patch7:  gnupg-2.1.11-build.patch
+Patch8:  gnupg-2.1.11-fix-tests.patch
 
 URL:     http://www.gnupg.org/
 
@@ -90,6 +91,7 @@ to the base GnuPG package
 %patch5 -p1 -b .keyusage
 %patch6 -p1 -b .fips
 %patch7 -p1 -b .build
+%patch8 -p1 -b .fix-tests
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -103,9 +105,7 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/scdaemon.c
 
 %configure \
   --disable-rpath \
-  --disable-gpgtar \
-  --enable-g13 \
-  --enable-standard-socket
+  --enable-g13
 
 # need scratch gpg database for tests
 mkdir -p $HOME/.gnupg
@@ -119,9 +119,7 @@ make install DESTDIR=%{buildroot} \
   docdir=%{_pkgdocdir}
 
 %if ! (0%{?rhel} > 5)
-# drop file conflicting with gnupg-1.x
-rm -f %{buildroot}%{_mandir}/man1/gpg-zip.1*
-# and rename another
+# rename file conflicting with gnupg-1.x
 rename gnupg.7 gnupg2.7 %{buildroot}%{_mandir}/man7/gnupg.7*
 %endif
 
@@ -165,7 +163,6 @@ fi
 
 
 %files -f %{name}.lang
-%defattr(-,root,root,-)
 %{!?_licensedir:%global license %%doc}
 %license COPYING
 #doc AUTHORS ChangeLog NEWS README THANKS TODO
@@ -173,13 +170,13 @@ fi
 %dir %{_sysconfdir}/gnupg
 %ghost %config(noreplace) %{_sysconfdir}/gnupg/gpgconf.conf
 ## docs say to install suid root, but fedora/rh security folk say not to
-#attr(4755,root,root) %{_bindir}/gpg2
 %{_bindir}/gpg2
 %{_bindir}/gpgv2
 %{_bindir}/gpg-connect-agent
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
 %{_bindir}/gpgparsemail
+%{_bindir}/gpgtar
 %{_bindir}/g13
 %{_bindir}/dirmngr
 %{_bindir}/dirmngr-client
@@ -188,8 +185,6 @@ fi
 %{_bindir}/gpgv
 %{_bindir}/gpgsplit
 %{_bindir}/gpg-zip
-%else
-%{_bindir}/gpgkey2ssh
 %endif
 %{_bindir}/watchgnupg
 %{_sbindir}/*
@@ -203,7 +198,6 @@ fi
 %exclude %{_libexecdir}/scdaemon
 
 %files smime
-%defattr(-,root,root,-)
 %{_bindir}/gpgsm*
 %{_bindir}/kbxutil
 %{_libexecdir}/scdaemon
@@ -213,6 +207,9 @@ fi
 
 
 %changelog
+* Tue Feb 16 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.11-1
+- upgrade to 2.1.11
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.10-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
