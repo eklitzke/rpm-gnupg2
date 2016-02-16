@@ -104,6 +104,7 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/scdaemon.c
 %build
 
 %configure \
+  --disable-gpgtar \
   --disable-rpath \
   --enable-g13
 
@@ -176,7 +177,6 @@ fi
 %{_bindir}/gpg-agent
 %{_bindir}/gpgconf
 %{_bindir}/gpgparsemail
-%{_bindir}/gpgtar
 %{_bindir}/g13
 %{_bindir}/dirmngr
 %{_bindir}/dirmngr-client
