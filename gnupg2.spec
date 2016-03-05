@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.11
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -131,7 +131,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/gnupg
 touch %{buildroot}%{_sysconfdir}/gnupg/gpgconf.conf
 
 # more docs
-install -m644 -p AUTHORS ChangeLog NEWS THANKS TODO \
+install -m644 -p AUTHORS NEWS THANKS TODO \
   %{buildroot}%{_pkgdocdir}
 
 %if 0%{?rhel} > 5
@@ -166,7 +166,7 @@ fi
 %files -f %{name}.lang
 %{!?_licensedir:%global license %%doc}
 %license COPYING
-#doc AUTHORS ChangeLog NEWS README THANKS TODO
+#doc AUTHORS NEWS README THANKS TODO
 %{_pkgdocdir}
 %dir %{_sysconfdir}/gnupg
 %ghost %config(noreplace) %{_sysconfdir}/gnupg/gpgconf.conf
@@ -207,6 +207,9 @@ fi
 
 
 %changelog
+* Sat Mar  5 2016 Peter Robinson <pbrobinson@fedoraproject.org> 2.1.11-2
+- Don't ship ChangeLog, core details already covered in NEWS
+
 * Tue Feb 16 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.11-1
 - upgrade to 2.1.11
 
