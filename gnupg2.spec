@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.11
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -43,6 +43,8 @@ BuildRequires: fuse
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
 Requires: pinentry
+
+Recommends: gnupg2-smime
 
 %if 0%{?rhel} > 5
 # pgp-tools, perl-GnuPG-Interface requires 'gpg' (not sure why) -- Rex
@@ -207,6 +209,9 @@ fi
 
 
 %changelog
+* Mon Mar  7 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.11-3
+- add recommends weak dependency for gnupg2-smime
+
 * Sat Mar  5 2016 Peter Robinson <pbrobinson@fedoraproject.org> 2.1.11-2
 - Don't ship ChangeLog, core details already covered in NEWS
 
