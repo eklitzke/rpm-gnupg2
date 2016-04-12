@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.11
-Release: 3%{?dist}
+Release: 4{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -42,7 +42,7 @@ BuildRequires: fuse
 
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
-Requires: pinentry
+Recommends: pinentry
 
 Recommends: gnupg2-smime
 
@@ -209,6 +209,10 @@ fi
 
 
 %changelog
+* Tue Apr 12 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.11-4
+- make the pinentry dependency weak as for the public-key operations it
+  is not needed (#1324595)
+
 * Mon Mar  7 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.11-3
 - add recommends weak dependency for gnupg2-smime
 
