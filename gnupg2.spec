@@ -1,6 +1,6 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.12
+Version: 2.1.13
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -13,7 +13,7 @@ Patch1:  gnupg-2.1.11-insttools.patch
 # needed for compatibility with system FIPS mode
 Patch3:  gnupg-2.1.10-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
-Patch4:  gnupg-2.1.10-file-is-digest.patch
+Patch4:  gnupg-2.1.13-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
 Patch7:  gnupg-2.1.12-build.patch
@@ -207,6 +207,9 @@ fi
 
 
 %changelog
+* Tue Jul 12 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.13-1
+- upgrade to 2.1.13
+
 * Thu May  5 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.12-1
 - upgrade to 2.1.12
 
