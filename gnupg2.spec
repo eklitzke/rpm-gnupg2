@@ -192,10 +192,10 @@ fi
 %{_libexecdir}/*
 %{_infodir}/*.info*
 %{_mandir}/man?/*
-%exclude %{_datadir}/gnupg/com-certs.pem
 %exclude %{_mandir}/man?/gpgsm*
 %exclude %{_mandir}/man?/scdaemon*
 %exclude %{_libexecdir}/scdaemon
+%exclude %{_bindir}/gpgscm*
 
 %files smime
 %{_bindir}/gpgsm*
