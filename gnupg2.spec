@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.13
-Release: 2%{?dist}
+Version: 2.1.16
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -13,12 +13,10 @@ Patch1:  gnupg-2.1.11-insttools.patch
 # needed for compatibility with system FIPS mode
 Patch3:  gnupg-2.1.10-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
-Patch4:  gnupg-2.1.13-file-is-digest.patch
+Patch4:  gnupg-2.1.16-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
 Patch7:  gnupg-2.1.12-build.patch
-# upstream patch to avoid using libgcrypt uninitialized
-Patch8:  gnupg-2.1.13-init-libgcrypt.patch
 
 URL:     http://www.gnupg.org/
 
@@ -94,7 +92,6 @@ to the base GnuPG package
 %patch5 -p1 -b .keyusage
 %patch6 -p1 -b .fips
 %patch7 -p1 -b .build
-%patch8 -p1 -b .init-libgcrypt
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -206,10 +203,12 @@ fi
 %{_libexecdir}/scdaemon
 %{_mandir}/man?/gpgsm*
 %{_mandir}/man?/scdaemon*
-%{_datadir}/gnupg/com-certs.pem
 
 
 %changelog
+* Mon Nov 28 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.16-1
+- upgrade to 2.1.16
+
 * Mon Aug 22 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.13-2
 - avoid using libgcrypt without initialization (#1366909)
 
