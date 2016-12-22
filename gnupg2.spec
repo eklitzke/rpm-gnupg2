@@ -1,6 +1,6 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.16
+Version: 2.1.17
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -16,7 +16,7 @@ Patch3:  gnupg-2.1.10-secmem.patch
 Patch4:  gnupg-2.1.16-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
-Patch7:  gnupg-2.1.12-build.patch
+Patch7:  gnupg-2.1.17-build.patch
 
 URL:     http://www.gnupg.org/
 
@@ -206,6 +206,9 @@ fi
 
 
 %changelog
+* Thu Dec 22 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.17-1
+- upgrade to 2.1.17
+
 * Mon Nov 28 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.16-1
 - upgrade to 2.1.16
 
