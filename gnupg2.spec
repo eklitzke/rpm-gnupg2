@@ -26,7 +26,7 @@ BuildRequires: curl-devel
 BuildRequires: docbook-utils
 BuildRequires: gettext
 BuildRequires: libassuan-devel >= 2.1.0
-BuildRequires: libgcrypt-devel >= 1.6.0
+BuildRequires: libgcrypt-devel >= 1.7.0
 BuildRequires: libgpg-error-devel >= 1.16
 BuildRequires: libksba-devel >= 1.3.0
 BuildRequires: openldap-devel
@@ -38,6 +38,8 @@ BuildRequires: zlib-devel
 BuildRequires: gnutls-devel
 BuildRequires: sqlite-devel
 BuildRequires: fuse
+
+Requires: libgcrypt >= 1.7.0
 
 Requires(post): /sbin/install-info
 Requires(postun): /sbin/install-info
