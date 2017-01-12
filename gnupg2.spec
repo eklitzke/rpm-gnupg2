@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.17
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -208,6 +208,9 @@ fi
 
 
 %changelog
+* Thu Jan 12 2017 Igor Gnatenko <ignatenko@redhat.com> - 2.1.17-2
+- Rebuild for readline 7.x
+
 * Thu Dec 22 2016 Tomáš Mráz <tmraz@redhat.com> - 2.1.17-1
 - upgrade to 2.1.17
 
