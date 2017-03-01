@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.17
-Release: 3%{?dist}
+Version: 2.1.18
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -16,7 +16,7 @@ Patch3:  gnupg-2.1.10-secmem.patch
 Patch4:  gnupg-2.1.16-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
-Patch7:  gnupg-2.1.17-build.patch
+Patch7:  gnupg-2.1.18-build.patch
 
 URL:     http://www.gnupg.org/
 
@@ -208,6 +208,9 @@ fi
 
 
 %changelog
+* Wed Mar  1 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.18-1
+- upgrade to 2.1.18
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.17-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
