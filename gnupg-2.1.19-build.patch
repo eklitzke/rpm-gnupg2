@@ -1,0 +1,92 @@
+diff -up gnupg-2.1.19/configure.ac.build gnupg-2.1.19/configure.ac
+--- gnupg-2.1.19/configure.ac.build	2017-03-01 18:30:52.000000000 +0100
++++ gnupg-2.1.19/configure.ac	2017-03-15 17:03:23.909920917 +0100
+@@ -89,8 +89,8 @@ AC_GNU_SOURCE
+ # CFLAGS (they are restored at the end of the configure script).  This
+ # is because some configure checks don't work with -Werror, but we'd
+ # like to use -Werror with our build.
+-CFLAGS_orig=$CFLAGS
+-CFLAGS=
++#CFLAGS_orig=$CFLAGS
++#CFLAGS=
+ 
+ # Some status variables.
+ have_gpg_error=no
+@@ -1710,7 +1710,7 @@ fi
+ #
+ # Add user CFLAGS.
+ #
+-CFLAGS="$CFLAGS $CFLAGS_orig"
++# CFLAGS="$CFLAGS $CFLAGS_orig"
+ 
+ #
+ # Decide what to build
+diff -up gnupg-2.1.19/configure.build gnupg-2.1.19/configure
+--- gnupg-2.1.19/configure.build	2017-03-01 18:41:49.000000000 +0100
++++ gnupg-2.1.19/configure	2017-03-15 17:03:23.911920964 +0100
+@@ -5044,8 +5044,8 @@ $as_echo "$ac_cv_safe_to_define___extens
+ # CFLAGS (they are restored at the end of the configure script).  This
+ # is because some configure checks don't work with -Werror, but we'd
+ # like to use -Werror with our build.
+-CFLAGS_orig=$CFLAGS
+-CFLAGS=
++#CFLAGS_orig=$CFLAGS
++#CFLAGS=
+ 
+ # Some status variables.
+ have_gpg_error=no
+@@ -15656,7 +15656,7 @@ fi
+ #
+ # Add user CFLAGS.
+ #
+-CFLAGS="$CFLAGS $CFLAGS_orig"
++# CFLAGS="$CFLAGS $CFLAGS_orig"
+ 
+ #
+ # Decide what to build
+diff -up gnupg-2.1.19/dirmngr/Makefile.am.build gnupg-2.1.19/dirmngr/Makefile.am
+--- gnupg-2.1.19/dirmngr/Makefile.am.build	2017-03-01 14:04:33.000000000 +0100
++++ gnupg-2.1.19/dirmngr/Makefile.am	2017-03-15 17:03:23.911920964 +0100
+@@ -152,7 +152,7 @@ t_ldap_parse_uri_SOURCES = \
+ 	t-ldap-parse-uri.c ldap-parse-uri.c ldap-parse-uri.h \
+         http.c dns-stuff.c \
+         $(ldap_url) $(t_common_src)
+-t_ldap_parse_uri_CFLAGS = -DWITHOUT_NPTH=1  $(USE_C99_CFLAGS) \
++t_ldap_parse_uri_CFLAGS = -DWITHOUT_NPTH=1 $(LIBASSUAN_CFLAGS) $(USE_C99_CFLAGS) \
+ 			  $(LIBGCRYPT_CFLAGS) $(GPG_ERROR_CFLAGS)
+ t_ldap_parse_uri_LDADD = $(ldaplibs) $(t_common_ldadd) $(DNSLIBS)
+ 
+diff -up gnupg-2.1.19/dirmngr/Makefile.in.build gnupg-2.1.19/dirmngr/Makefile.in
+--- gnupg-2.1.19/dirmngr/Makefile.in.build	2017-03-01 18:41:47.000000000 +0100
++++ gnupg-2.1.19/dirmngr/Makefile.in	2017-03-15 17:03:23.911920964 +0100
+@@ -681,7 +681,7 @@ t_ldap_parse_uri_SOURCES = \
+         http.c dns-stuff.c \
+         $(ldap_url) $(t_common_src)
+ 
+-t_ldap_parse_uri_CFLAGS = -DWITHOUT_NPTH=1  $(USE_C99_CFLAGS) \
++t_ldap_parse_uri_CFLAGS = -DWITHOUT_NPTH=1 $(LIBASSUAN_CFLAGS) $(USE_C99_CFLAGS) \
+ 			  $(LIBGCRYPT_CFLAGS) $(GPG_ERROR_CFLAGS)
+ 
+ t_ldap_parse_uri_LDADD = $(ldaplibs) $(t_common_ldadd) $(DNSLIBS)
+diff -up gnupg-2.1.19/tests/openpgp/Makefile.am.build gnupg-2.1.19/tests/openpgp/Makefile.am
+--- gnupg-2.1.19/tests/openpgp/Makefile.am.build	2017-03-01 14:04:33.000000000 +0100
++++ gnupg-2.1.19/tests/openpgp/Makefile.am	2017-03-15 18:41:09.899078597 +0100
+@@ -82,7 +82,6 @@ XTESTS = \
+ 	import-revocation-certificate.scm \
+ 	ecc.scm \
+ 	4gb-packet.scm \
+-	tofu.scm \
+ 	gpgtar.scm \
+ 	use-exact-key.scm \
+ 	default-key.scm \
+diff -up gnupg-2.1.19/tests/openpgp/Makefile.in.build gnupg-2.1.19/tests/openpgp/Makefile.in
+--- gnupg-2.1.19/tests/openpgp/Makefile.in.build	2017-03-01 18:41:48.000000000 +0100
++++ gnupg-2.1.19/tests/openpgp/Makefile.in	2017-03-15 18:41:27.318482699 +0100
+@@ -478,7 +478,6 @@ XTESTS = \
+ 	import-revocation-certificate.scm \
+ 	ecc.scm \
+ 	4gb-packet.scm \
+-	tofu.scm \
+ 	gpgtar.scm \
+ 	use-exact-key.scm \
+ 	default-key.scm \

@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.18
-Release: 2%{?dist}
+Version: 2.1.19
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -10,13 +10,15 @@ Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
 Patch1:  gnupg-2.1.11-insttools.patch
+# exponential backoff when waiting on gpg-agent and dirmngr to save time
+Patch2:  gnupg-2.1.19-exponential.patch
 # needed for compatibility with system FIPS mode
 Patch3:  gnupg-2.1.10-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
 Patch4:  gnupg-2.1.16-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
-Patch7:  gnupg-2.1.18-build.patch
+Patch7:  gnupg-2.1.19-build.patch
 
 URL:     http://www.gnupg.org/
 
@@ -89,6 +91,7 @@ to the base GnuPG package
 %if 0%{?rhel} > 5
 %patch1 -p1 -b .insttools
 %endif
+%patch2 -p1 -b .exponential
 %patch3 -p1 -b .secmem
 %patch4 -p1 -b .file-is-digest
 %patch5 -p1 -b .keyusage
@@ -152,7 +155,6 @@ rm -f %{buildroot}%{_infodir}/dir
 %check
 # need scratch gpg database for tests
 mkdir -p $HOME/.gnupg
-# some gpg2 tests (still) FAIL on non i386 platforms
 make -k check
 
 
@@ -208,6 +210,11 @@ fi
 
 
 %changelog
+* Wed Mar 15 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.19-1
+- upgrade to 2.1.19
+- shorten time waiting on gpg-agent/dirmngr to start by exponential
+  backoff (#1431749)
+
 * Wed Mar  1 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.18-2
 - upgrade to 2.1.18
 
