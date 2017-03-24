@@ -210,7 +210,7 @@ fi
 
 
 %changelog
-* Wed Mar 15 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.19-1
+* Fri Mar 24 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.19-1
 - upgrade to 2.1.19
 - shorten time waiting on gpg-agent/dirmngr to start by exponential
   backoff (#1431749)

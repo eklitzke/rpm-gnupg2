@@ -68,6 +68,118 @@ diff -up gnupg-2.1.19/dirmngr/Makefile.in.build gnupg-2.1.19/dirmngr/Makefile.in
  			  $(LIBGCRYPT_CFLAGS) $(GPG_ERROR_CFLAGS)
  
  t_ldap_parse_uri_LDADD = $(ldaplibs) $(t_common_ldadd) $(DNSLIBS)
+diff -up gnupg-2.1.19/tests/gpgscm/scheme.c.build gnupg-2.1.19/tests/gpgscm/scheme.c
+--- gnupg-2.1.19/tests/gpgscm/scheme.c.build	2017-03-01 14:04:33.000000000 +0100
++++ gnupg-2.1.19/tests/gpgscm/scheme.c	2017-03-24 17:22:38.305054344 +0100
+@@ -113,41 +113,29 @@ static const char *strlwr(char *s) {
+ 
+ 
+ 
+-/* Support for immediate values.
+- *
+- * Immediate values are tagged with IMMEDIATE_TAG, which is neither
+- * used in types, nor in pointer values.
+- *
+- * XXX: Currently, we only use this to tag pointers in vectors.  */
+-#define IMMEDIATE_TAG		1
+-#define is_immediate(p)		((pointer) ((uintptr_t) (p) &  IMMEDIATE_TAG))
+-#define set_immediate(p)	((pointer) ((uintptr_t) (p) |  IMMEDIATE_TAG))
+-#define clr_immediate(p)	((pointer) ((uintptr_t) (p) & ~IMMEDIATE_TAG))
+-
+-
+-
++/* All types have the LSB set.  The garbage collector takes advantage
++ * of that to identify types.  */
+ enum scheme_types {
+-  T_STRING=1 << 1,	/* Do not use the lsb, it is used for
+-			 * immediate values.  */
+-  T_NUMBER=2 << 1,
+-  T_SYMBOL=3 << 1,
+-  T_PROC=4 << 1,
+-  T_PAIR=5 << 1,
+-  T_CLOSURE=6 << 1,
+-  T_CONTINUATION=7 << 1,
+-  T_FOREIGN=8 << 1,
+-  T_CHARACTER=9 << 1,
+-  T_PORT=10 << 1,
+-  T_VECTOR=11 << 1,
+-  T_MACRO=12 << 1,
+-  T_PROMISE=13 << 1,
+-  T_ENVIRONMENT=14 << 1,
+-  T_FOREIGN_OBJECT=15 << 1,
+-  T_BOOLEAN=16 << 1,
+-  T_NIL=17 << 1,
+-  T_EOF_OBJ=18 << 1,
+-  T_SINK=19 << 1,
+-  T_LAST_SYSTEM_TYPE=19 << 1
++  T_STRING =		 1 << 1 | 1,
++  T_NUMBER =		 2 << 1 | 1,
++  T_SYMBOL =		 3 << 1 | 1,
++  T_PROC =		 4 << 1 | 1,
++  T_PAIR =		 5 << 1 | 1,
++  T_CLOSURE =		 6 << 1 | 1,
++  T_CONTINUATION =	 7 << 1 | 1,
++  T_FOREIGN =		 8 << 1 | 1,
++  T_CHARACTER =		 9 << 1 | 1,
++  T_PORT =		10 << 1 | 1,
++  T_VECTOR =		11 << 1 | 1,
++  T_MACRO =		12 << 1 | 1,
++  T_PROMISE =		13 << 1 | 1,
++  T_ENVIRONMENT =	14 << 1 | 1,
++  T_FOREIGN_OBJECT =	15 << 1 | 1,
++  T_BOOLEAN =		16 << 1 | 1,
++  T_NIL =		17 << 1 | 1,
++  T_EOF_OBJ =		18 << 1 | 1,
++  T_SINK =		19 << 1 | 1,
++  T_LAST_SYSTEM_TYPE =	19 << 1 | 1
+ };
+ 
+ static const char *
+@@ -1357,20 +1345,20 @@ INTERFACE static void fill_vector(pointe
+      size_t i;
+      assert (is_vector (vec));
+      for(i = 0; i < vector_length(vec); i++) {
+-          vec->_object._vector._elements[i] = set_immediate(obj);
++          vec->_object._vector._elements[i] = obj;
+      }
+ }
+ 
+ INTERFACE static pointer vector_elem(pointer vec, int ielem) {
+      assert (is_vector (vec));
+      assert (ielem < vector_length(vec));
+-     return clr_immediate(vec->_object._vector._elements[ielem]);
++     return vec->_object._vector._elements[ielem];
+ }
+ 
+ INTERFACE static pointer set_vector_elem(pointer vec, int ielem, pointer a) {
+      assert (is_vector (vec));
+      assert (ielem < vector_length(vec));
+-     vec->_object._vector._elements[ielem] = set_immediate(a);
++     vec->_object._vector._elements[ielem] = a;
+      return a;
+ }
+ 
+@@ -1572,7 +1560,7 @@ E2:  setmark(p);
+      if(is_vector(p)) {
+           int i;
+           for (i = 0; i < vector_length(p); i++) {
+-               mark(clr_immediate(p->_object._vector._elements[i]));
++               mark(p->_object._vector._elements[i]);
+           }
+      }
+ #if SHOW_ERROR_LINE
+@@ -1673,8 +1661,9 @@ static void gc(scheme *sc, pointer a, po
+   for (i = sc->last_cell_seg; i >= 0; i--) {
+     p = sc->cell_seg[i] + CELL_SEGSIZE;
+     while (--p >= sc->cell_seg[i]) {
+-      if (typeflag(p) & IMMEDIATE_TAG)
+-        continue;
++      if ((typeflag(p) & 1) == 0)
++	/* All types have the LSB set.  This is not a typeflag.  */
++	continue;
+       if (is_mark(p)) {
+     clrmark(p);
+       } else {
 diff -up gnupg-2.1.19/tests/openpgp/Makefile.am.build gnupg-2.1.19/tests/openpgp/Makefile.am
 --- gnupg-2.1.19/tests/openpgp/Makefile.am.build	2017-03-01 14:04:33.000000000 +0100
 +++ gnupg-2.1.19/tests/openpgp/Makefile.am	2017-03-15 18:41:09.899078597 +0100
@@ -90,3 +202,42 @@ diff -up gnupg-2.1.19/tests/openpgp/Makefile.in.build gnupg-2.1.19/tests/openpgp
  	gpgtar.scm \
  	use-exact-key.scm \
  	default-key.scm \
+diff -up gnupg-2.1.19/tests/openpgp/quick-key-manipulation.scm.build gnupg-2.1.19/tests/openpgp/quick-key-manipulation.scm
+--- gnupg-2.1.19/tests/openpgp/quick-key-manipulation.scm.build	2017-03-01 14:04:33.000000000 +0100
++++ gnupg-2.1.19/tests/openpgp/quick-key-manipulation.scm	2017-03-24 17:23:01.123587702 +0100
+@@ -123,8 +123,13 @@
+    (default default never)
+    (rsa "sign auth encr" "seconds=600") ;; GPGME uses this
+    (rsa "auth,encr" "2") ;; "without a letter, days is assumed"
+-   (rsa "sign" "2105-01-01") ;; "last year GnuPG can represent is 2105"
+-   (rsa "sign" "21050101T115500") ;; "last year GnuPG can represent is 2105"
++   ;; Sadly, the timestamp is truncated by the use of time_t on
++   ;; systems where time_t is a signed 32 bit value.
++   (rsa "sign" "2038-01-01")      ;; unix millennium
++   (rsa "sign" "20380101T115500") ;; unix millennium
++   ;; Once fixed, we can use later timestamps:
++   ;; (rsa "sign" "2105-01-01")      ;; "last year GnuPG can represent is 2105"
++   ;; (rsa "sign" "21050101T115500") ;; "last year GnuPG can represent is 2105"
+    (rsa sign "2d")
+    (rsa1024 sign "2w")
+    (rsa2048 encr "2m")
+@@ -155,7 +160,8 @@
+   (lambda (subkey)
+     (assert (= 1 (:alg subkey)))
+     (assert (string-contains? (:cap subkey) "s"))
+-    (assert (time-matches? 4260207600 ;; 2105-01-01
++    (assert (time-matches? 2145916800    ;; 2038-01-01
++			   ;; 4260207600 ;; 2105-01-01
+ 			   (string->number (:expire subkey))
+ 			   ;; This is off by 12h, but I guess it just
+ 			   ;; choses the middle of the day.
+@@ -163,7 +169,8 @@
+   (lambda (subkey)
+     (assert (= 1 (:alg subkey)))
+     (assert (string-contains? (:cap subkey) "s"))
+-    (assert (time-matches? 4260254100 ;; UTC 2105-01-01 11:55:00
++    (assert (time-matches? 2145959700    ;; UTC 2038-01-01 11:55:00
++			   ;; 4260254100 ;; UTC 2105-01-01 11:55:00
+ 			   (string->number (:expire subkey))
+ 			   (minutes->seconds 5))))
+   (lambda (subkey)
