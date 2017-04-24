@@ -1,6 +1,6 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.19
+Version: 2.1.20
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -15,10 +15,10 @@ Patch2:  gnupg-2.1.19-exponential.patch
 # needed for compatibility with system FIPS mode
 Patch3:  gnupg-2.1.10-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
-Patch4:  gnupg-2.1.16-file-is-digest.patch
+Patch4:  gnupg-2.1.20-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
-Patch7:  gnupg-2.1.19-build.patch
+Patch7:  gnupg-2.1.20-build.patch
 
 URL:     http://www.gnupg.org/
 
@@ -109,6 +109,7 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/scdaemon.c
 %build
 
 %configure \
+  --disable-libdns \
   --disable-gpgtar \
   --disable-rpath \
   --enable-g13
@@ -210,6 +211,10 @@ fi
 
 
 %changelog
+* Mon Apr 24 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.20-1
+- upgrade to 2.1.20
+- disable bundled libdns for now (#1444352)
+
 * Fri Mar 24 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.19-1
 - upgrade to 2.1.19
 - shorten time waiting on gpg-agent/dirmngr to start by exponential
