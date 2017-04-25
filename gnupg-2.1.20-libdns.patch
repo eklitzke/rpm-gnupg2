@@ -1,0 +1,264 @@
+diff -up gnupg-2.1.20/dirmngr/dns.c.libdns gnupg-2.1.20/dirmngr/dns.c
+--- gnupg-2.1.20/dirmngr/dns.c.libdns	2017-04-25 13:20:12.051976169 +0200
++++ gnupg-2.1.20/dirmngr/dns.c	2017-04-25 14:24:52.951679817 +0200
+@@ -9439,29 +9439,32 @@ void dns_ai_close(struct dns_addrinfo *a
+ 
+ 
+ static int dns_ai_setent(struct addrinfo **ent, union dns_any *any, enum dns_type type, struct dns_addrinfo *ai) {
+-	struct sockaddr *saddr;
+-	struct sockaddr_in sin;
+-	struct sockaddr_in6 sin6;
++	union u {
++		struct sockaddr_in sin;
++		struct sockaddr_in6 sin6;
++		struct sockaddr_storage ss;
++	} addr;
+ 	const char *cname;
+ 	size_t clen;
++	sa_family_t f;
+ 
+ 	switch (type) {
+ 	case DNS_T_A:
+-		saddr	= memset(&sin, '\0', sizeof sin);
++		memset(&addr.sin, '\0', sizeof addr.sin);
+ 
+-		sin.sin_family	= AF_INET;
+-		sin.sin_port	= htons(ai->port);
++		addr.sin.sin_family	= AF_INET;
++		addr.sin.sin_port	= htons(ai->port);
+ 
+-		memcpy(&sin.sin_addr, any, sizeof sin.sin_addr);
++		memcpy(&addr.sin.sin_addr, any, sizeof addr.sin.sin_addr);
+ 
+ 		break;
+ 	case DNS_T_AAAA:
+-		saddr	= memset(&sin6, '\0', sizeof sin6);
++		memset(&addr.sin6, '\0', sizeof addr.sin6);
+ 
+-		sin6.sin6_family	= AF_INET6;
+-		sin6.sin6_port		= htons(ai->port);
++		addr.sin6.sin6_family	= AF_INET6;
++		addr.sin6.sin6_port		= htons(ai->port);
+ 
+-		memcpy(&sin6.sin6_addr, any, sizeof sin6.sin6_addr);
++		memcpy(&addr.sin6.sin6_addr, any, sizeof addr.sin6.sin6_addr);
+ 
+ 		break;
+ 	default:
+@@ -9476,20 +9479,20 @@ static int dns_ai_setent(struct addrinfo
+ 		clen	= 0;
+ 	}
+ 
+-	if (!(*ent = malloc(sizeof **ent + dns_sa_len(saddr) + ((ai->hints.ai_flags & AI_CANONNAME)? clen + 1 : 0))))
++	if (!(*ent = malloc(sizeof **ent + dns_sa_len(&addr) + ((ai->hints.ai_flags & AI_CANONNAME)? clen + 1 : 0))))
+ 		return dns_syerr();
+ 
+ 	memset(*ent, '\0', sizeof **ent);
+ 
+-	(*ent)->ai_family	= saddr->sa_family;
++	(*ent)->ai_family	= addr.ss.ss_family;
+ 	(*ent)->ai_socktype	= ai->hints.ai_socktype;
+ 	(*ent)->ai_protocol	= ai->hints.ai_protocol;
+ 
+-	(*ent)->ai_addr		= memcpy((unsigned char *)*ent + sizeof **ent, saddr, dns_sa_len(saddr));
+-	(*ent)->ai_addrlen	= dns_sa_len(saddr);
++	(*ent)->ai_addr		= memcpy((unsigned char *)*ent + sizeof **ent, &addr, dns_sa_len(&addr));
++	(*ent)->ai_addrlen	= dns_sa_len(&addr);
+ 
+ 	if (ai->hints.ai_flags & AI_CANONNAME)
+-		(*ent)->ai_canonname	= memcpy((unsigned char *)*ent + sizeof **ent + dns_sa_len(saddr), cname, clen + 1);
++		(*ent)->ai_canonname	= memcpy((unsigned char *)*ent + sizeof **ent + dns_sa_len(&addr), cname, clen + 1);
+ 
+ 	ai->found++;
+ 
+diff -up gnupg-2.1.20/dirmngr/dns-stuff.c.libdns gnupg-2.1.20/dirmngr/dns-stuff.c
+--- gnupg-2.1.20/dirmngr/dns-stuff.c.libdns	2017-04-03 20:58:25.000000000 +0200
++++ gnupg-2.1.20/dirmngr/dns-stuff.c	2017-04-25 09:31:51.503657541 +0200
+@@ -845,7 +845,7 @@ resolve_name_libdns (const char *name, u
+             (*r_canonname)[strlen (*r_canonname)-1] = 0;
+         }
+ 
+-      dai = xtrymalloc (sizeof *dai + ent->ai_addrlen -1);
++      dai = xtrymalloc (sizeof *dai);
+       if (dai == NULL)
+         {
+           err = gpg_error_from_syserror ();
+@@ -969,7 +969,7 @@ resolve_name_standard (const char *name,
+       if (opt_disable_ipv6 && ai->ai_family == AF_INET6)
+         continue;
+ 
+-      dai = xtrymalloc (sizeof *dai + ai->ai_addrlen - 1);
++      dai = xtrymalloc (sizeof *dai);
+       dai->family = ai->ai_family;
+       dai->socktype = ai->ai_socktype;
+       dai->protocol = ai->ai_protocol;
+@@ -1037,7 +1037,7 @@ resolve_dns_name (const char *name, unsi
+ #ifdef USE_LIBDNS
+ /* Resolve an address using libdns.  */
+ static gpg_error_t
+-resolve_addr_libdns (const struct sockaddr *addr, int addrlen,
++resolve_addr_libdns (const struct sockaddr_storage *addr, int addrlen,
+                      unsigned int flags, char **r_name)
+ {
+   gpg_error_t err;
+@@ -1051,13 +1051,13 @@ resolve_addr_libdns (const struct sockad
+ 
+   /* First we turn ADDR into a DNS name (with ".arpa" suffix).  */
+   err = 0;
+-  if (addr->sa_family == AF_INET6)
++  if (addr->ss_family == AF_INET6)
+     {
+       const struct sockaddr_in6 *a6 = (const struct sockaddr_in6 *)addr;
+       if (!dns_aaaa_arpa (host, sizeof host, (void*)&a6->sin6_addr))
+         err = gpg_error (GPG_ERR_INV_OBJ);
+     }
+-  else if (addr->sa_family == AF_INET)
++  else if (addr->ss_family == AF_INET)
+     {
+       const struct sockaddr_in *a4 = (const struct sockaddr_in *)addr;
+       if (!dns_a_arpa (host, sizeof host, (void*)&a4->sin_addr))
+@@ -1145,18 +1145,19 @@ resolve_addr_libdns (const struct sockad
+       buflen = sizeof ptr.host;
+ 
+       p = buffer;
+-      if (addr->sa_family == AF_INET6 && (flags & DNS_WITHBRACKET))
++      if (addr->ss_family == AF_INET6 && (flags & DNS_WITHBRACKET))
+         {
+           *p++ = '[';
+           buflen -= 2;
+         }
+-      ec = getnameinfo (addr, addrlen, p, buflen, NULL, 0, NI_NUMERICHOST);
++      ec = getnameinfo ((const struct sockaddr *)addr,
++                        addrlen, p, buflen, NULL, 0, NI_NUMERICHOST);
+       if (ec)
+         {
+           err = map_eai_to_gpg_error (ec);
+           goto leave;
+         }
+-      if (addr->sa_family == AF_INET6 && (flags & DNS_WITHBRACKET))
++      if (addr->ss_family == AF_INET6 && (flags & DNS_WITHBRACKET))
+         strcat (buffer, "]");
+     }
+ 
+@@ -1170,7 +1171,7 @@ resolve_addr_libdns (const struct sockad
+ 
+ /* Resolve an address using the standard system function.  */
+ static gpg_error_t
+-resolve_addr_standard (const struct sockaddr *addr, int addrlen,
++resolve_addr_standard (const struct sockaddr_storage *addr, int addrlen,
+                        unsigned int flags, char **r_name)
+ {
+   gpg_error_t err;
+@@ -1188,20 +1189,22 @@ resolve_addr_standard (const struct sock
+   if ((flags & DNS_NUMERICHOST) || tor_mode)
+     ec = EAI_NONAME;
+   else
+-    ec = getnameinfo (addr, addrlen, buffer, buflen, NULL, 0, NI_NAMEREQD);
++    ec = getnameinfo ((const struct sockaddr *)addr,
++                      addrlen, buffer, buflen, NULL, 0, NI_NAMEREQD);
+ 
+   if (!ec && *buffer == '[')
+     ec = EAI_FAIL;  /* A name may never start with a bracket.  */
+   else if (ec == EAI_NONAME)
+     {
+       p = buffer;
+-      if (addr->sa_family == AF_INET6 && (flags & DNS_WITHBRACKET))
++      if (addr->ss_family == AF_INET6 && (flags & DNS_WITHBRACKET))
+         {
+           *p++ = '[';
+           buflen -= 2;
+         }
+-      ec = getnameinfo (addr, addrlen, p, buflen, NULL, 0, NI_NUMERICHOST);
+-      if (!ec && addr->sa_family == AF_INET6 && (flags & DNS_WITHBRACKET))
++      ec = getnameinfo ((const struct sockaddr *)addr,
++                        addrlen, p, buflen, NULL, 0, NI_NUMERICHOST);
++      if (!ec && addr->ss_family == AF_INET6 && (flags & DNS_WITHBRACKET))
+         strcat (buffer, "]");
+     }
+ 
+@@ -1230,7 +1233,7 @@ resolve_addr_standard (const struct sock
+ 
+ /* A wrapper around getnameinfo.  */
+ gpg_error_t
+-resolve_dns_addr (const struct sockaddr *addr, int addrlen,
++resolve_dns_addr (const struct sockaddr_storage *addr, int addrlen,
+                   unsigned int flags, char **r_name)
+ {
+   gpg_error_t err;
+diff -up gnupg-2.1.20/dirmngr/dns-stuff.h.libdns gnupg-2.1.20/dirmngr/dns-stuff.h
+--- gnupg-2.1.20/dirmngr/dns-stuff.h.libdns	2017-04-03 20:58:25.000000000 +0200
++++ gnupg-2.1.20/dirmngr/dns-stuff.h	2017-04-25 09:31:51.503657541 +0200
+@@ -78,7 +78,7 @@ struct dns_addrinfo_s
+   int socktype;
+   int protocol;
+   int addrlen;
+-  struct sockaddr addr[1];
++  struct sockaddr_storage addr[1];
+ };
+ 
+ 
+@@ -142,7 +142,7 @@ gpg_error_t resolve_dns_name (const char
+                               dns_addrinfo_t *r_dai, char **r_canonname);
+ 
+ /* Function similar to getnameinfo.  */
+-gpg_error_t resolve_dns_addr (const struct sockaddr *addr, int addrlen,
++gpg_error_t resolve_dns_addr (const struct sockaddr_storage *addr, int addrlen,
+                               unsigned int flags, char **r_name);
+ 
+ /* Return true if NAME is a numerical IP address.  */
+diff -up gnupg-2.1.20/dirmngr/http.c.libdns gnupg-2.1.20/dirmngr/http.c
+--- gnupg-2.1.20/dirmngr/http.c.libdns	2017-04-03 17:13:56.000000000 +0200
++++ gnupg-2.1.20/dirmngr/http.c	2017-04-25 09:31:51.503657541 +0200
+@@ -2470,13 +2470,13 @@ start_server ()
+  * This function is basically a copy of the same internal fucntion in
+  * Libassuan.  */
+ static int
+-use_socks (struct sockaddr *addr)
++use_socks (struct sockaddr_storage *addr)
+ {
+   int mode;
+ 
+   if (assuan_sock_get_flag (ASSUAN_INVALID_FD, "tor-mode", &mode) || !mode)
+     return 0;  /* Not in Tor mode.  */
+-  else if (addr->sa_family == AF_INET6)
++  else if (addr->ss_family == AF_INET6)
+     {
+       struct sockaddr_in6 *addr_in6 = (struct sockaddr_in6 *)addr;
+       const unsigned char *s;
+@@ -2491,7 +2491,7 @@ use_socks (struct sockaddr *addr)
+ 
+       return 0; /* This is the loopback address.  */
+     }
+-  else if (addr->sa_family == AF_INET)
++  else if (addr->ss_family == AF_INET)
+     {
+       struct sockaddr_in *addr_in = (struct sockaddr_in *)addr;
+ 
+@@ -2508,7 +2508,7 @@ use_socks (struct sockaddr *addr)
+ /* Wrapper around assuan_sock_new which takes the domain from an
+  * address parameter.  */
+ static assuan_fd_t
+-my_sock_new_for_addr (struct sockaddr *addr, int type, int proto)
++my_sock_new_for_addr (struct sockaddr_storage *addr, int type, int proto)
+ {
+   int domain;
+ 
+@@ -2519,7 +2519,7 @@ my_sock_new_for_addr (struct sockaddr *a
+       domain = AF_INET;
+     }
+   else
+-    domain = addr->sa_family;
++    domain = addr->ss_family;
+ 
+   return assuan_sock_new (domain, type, proto);
+ }
+@@ -2644,7 +2644,8 @@ connect_server (const char *server, unsi
+             }
+ 
+           anyhostaddr = 1;
+-          if (assuan_sock_connect (sock, ai->addr, ai->addrlen))
++          if (assuan_sock_connect (sock, (struct sockaddr *)ai->addr,
++                                   ai->addrlen))
+             {
+               last_err = gpg_err_make (default_errsource,
+                                        gpg_err_code_from_syserror ());
