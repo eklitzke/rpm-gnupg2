@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.20
-Release: 2%{?dist}
+Version: 2.1.21
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -19,7 +19,6 @@ Patch4:  gnupg-2.1.20-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
 Patch7:  gnupg-2.1.20-build.patch
-Patch8:  gnupg-2.1.20-libdns.patch
 
 URL:     http://www.gnupg.org/
 
@@ -98,7 +97,6 @@ to the base GnuPG package
 %patch5 -p1 -b .keyusage
 %patch6 -p1 -b .fips
 %patch7 -p1 -b .build
-%patch8 -p1 -b .libdns
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -212,6 +210,9 @@ fi
 
 
 %changelog
+* Tue May 16 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.21-1
+- upgrade to 2.1.21
+
 * Tue Apr 25 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.20-2
 - libdns aliasing issues fixed
 
