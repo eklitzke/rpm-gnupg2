@@ -1,0 +1,71 @@
+From 386a7bbb245dd3ab7c4156a554adbe75d82bdf49 Mon Sep 17 00:00:00 2001
+From: Justus Winter <justus@g10code.com>
+Date: Tue, 16 May 2017 16:07:25 +0200
+Subject: [PATCH] tests: Configure the environments to use scdaemon from build
+ tree.
+
+* tests/gpgme/gpgme-defs.scm: Use the scdaemon from the build tree
+when writing a 'gpg-agent.conf'.
+* tests/gpgsm/gpgsm-defs.scm: Likewise.
+* tests/openpgp/defs.scm: Likewise.
+--
+
+As of 97a2394ecafaa6f58e4a1f70ecfd04408dc15606 gpg may query the
+scdaemon for a signing key to use.  To make sure that the agent calls
+the right scdaemon, we provide the path explicitly in the
+'gpg-agent.conf' that is used in the tests, similar to what we do for
+the agent itself and the pinentry.
+
+GnuPG-bug-id: 3165
+Signed-off-by: Justus Winter <justus@g10code.com>
+---
+ tests/gpgme/gpgme-defs.scm | 4 +++-
+ tests/gpgsm/gpgsm-defs.scm | 4 +++-
+ tests/openpgp/defs.scm     | 1 +
+ 3 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/tests/gpgme/gpgme-defs.scm b/tests/gpgme/gpgme-defs.scm
+index e24db25..0de589f 100644
+--- a/tests/gpgme/gpgme-defs.scm
++++ b/tests/gpgme/gpgme-defs.scm
+@@ -66,7 +66,9 @@
+    (string-append "agent-program " (tool 'gpg-agent) "|--debug-quick-random\n"))
+   (create-file
+    "gpg-agent.conf"
+-   (string-append "pinentry-program " (tool 'pinentry)))
++   (string-append "pinentry-program " (tool 'pinentry))
++   (string-append "scdaemon-program " (tool 'scdaemon))
++   )
+ 
+   (start-agent)
+ 
+diff --git a/tests/gpgsm/gpgsm-defs.scm b/tests/gpgsm/gpgsm-defs.scm
+index 711922a..d99d7da 100644
+--- a/tests/gpgsm/gpgsm-defs.scm
++++ b/tests/gpgsm/gpgsm-defs.scm
+@@ -66,7 +66,9 @@
+ 	       "disable-crl-checks"
+ 	       "faked-system-time 1008241200")
+   (create-file "gpg-agent.conf"
+-	       (string-append "pinentry-program " (tool 'pinentry)))
++	       (string-append "pinentry-program " (tool 'pinentry))
++	       (string-append "scdaemon-program " (tool 'scdaemon))
++	       )
+   (start-agent)
+   (create-file
+    "trustlist.txt"
+diff --git a/tests/openpgp/defs.scm b/tests/openpgp/defs.scm
+index 1531dc1..0cd45ad 100644
+--- a/tests/openpgp/defs.scm
++++ b/tests/openpgp/defs.scm
+@@ -349,6 +349,7 @@
+ 	       "no-grab"
+ 	       "enable-ssh-support"
+ 	       (string-append "pinentry-program " (tool 'pinentry))
++	       (string-append "scdaemon-program " (tool 'scdaemon))
+ 	       ))
+ 
+ ;; Initialize the test environment, install appropriate configuration
+-- 
+2.9.3
+

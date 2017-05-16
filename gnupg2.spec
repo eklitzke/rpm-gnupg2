@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.21
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -19,6 +19,7 @@ Patch4:  gnupg-2.1.20-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
 Patch7:  gnupg-2.1.20-build.patch
+Patch8:  gnupg-2.1.21-scdaemon-path.patch
 
 URL:     http://www.gnupg.org/
 
@@ -97,6 +98,7 @@ to the base GnuPG package
 %patch5 -p1 -b .keyusage
 %patch6 -p1 -b .fips
 %patch7 -p1 -b .build
+%patch8 -p1 -b .scdaemon
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -155,8 +157,7 @@ rm -f %{buildroot}%{_infodir}/dir
 %check
 # need scratch gpg database for tests
 mkdir -p $HOME/.gnupg
-# check is currently broken due to hardcoded paths to scdaemon, agent, etc.
-make -k check || :
+make -k check
 
 
 %post
@@ -198,19 +199,18 @@ fi
 %{_infodir}/*.info*
 %{_mandir}/man?/*
 %exclude %{_mandir}/man?/gpgsm*
-%exclude %{_mandir}/man?/scdaemon*
-%exclude %{_libexecdir}/scdaemon
 %exclude %{_bindir}/gpgscm*
 
 %files smime
 %{_bindir}/gpgsm*
 %{_bindir}/kbxutil
-%{_libexecdir}/scdaemon
 %{_mandir}/man?/gpgsm*
-%{_mandir}/man?/scdaemon*
 
 
 %changelog
+* Tue May 16 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.21-2
+- scdaemon is now needed by gpg
+
 * Tue May 16 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.21-1
 - upgrade to 2.1.21
 
