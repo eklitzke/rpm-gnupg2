@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.21
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -9,7 +9,7 @@ Source0: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.
 Source1: ftp://ftp.gnupg.org/gcrypt/%{?pre:alpha/}gnupg/gnupg-%{version}%{?pre}.tar.bz2.sig
 # svn export svn://cvs.gnupg.org/gnupg/trunk gnupg2; tar cjf gnupg-<date>svn.tar.bz2 gnupg2
 #Source0: gnupg2-20090809svn.tar.bz2
-Patch1:  gnupg-2.1.11-insttools.patch
+Patch1:  gnupg-2.1.21-insttools.patch
 # exponential backoff when waiting on gpg-agent and dirmngr to save time
 Patch2:  gnupg-2.1.19-exponential.patch
 # needed for compatibility with system FIPS mode
@@ -20,6 +20,8 @@ Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
 Patch7:  gnupg-2.1.20-build.patch
 Patch8:  gnupg-2.1.21-scdaemon-path.patch
+# allow 8192 bit RSA keys in keygen UI with large RSA
+Patch9:  gnupg-2.1.21-large-rsa.patch
 
 URL:     http://www.gnupg.org/
 
@@ -99,6 +101,7 @@ to the base GnuPG package
 %patch6 -p1 -b .fips
 %patch7 -p1 -b .build
 %patch8 -p1 -b .scdaemon
+%patch9 -p1 -b .large-rsa
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
 # Note: this is just the name of the default shared lib to load in scdaemon,
@@ -113,7 +116,8 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/scdaemon.c
 %configure \
   --disable-gpgtar \
   --disable-rpath \
-  --enable-g13
+  --enable-g13 \
+  --enable-large-secmem
 
 # need scratch gpg database for tests
 mkdir -p $HOME/.gnupg
@@ -208,6 +212,10 @@ fi
 
 
 %changelog
+* Tue Jul 18 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.21-3
+- rebase the insttools patch
+- enable large secure memory support
+
 * Tue May 16 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.21-2
 - scdaemon is now needed by gpg
 
