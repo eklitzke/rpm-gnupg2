@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.21
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -212,6 +212,9 @@ fi
 
 
 %changelog
+* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.21-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
 * Tue Jul 18 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.21-3
 - rebase the insttools patch
 - enable large secure memory support
