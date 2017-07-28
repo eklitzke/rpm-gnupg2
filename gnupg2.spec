@@ -157,6 +157,8 @@ ln -sf gnupg.7 %{buildroot}%{_mandir}/man7/gnupg2.7
 # info dir
 rm -f %{buildroot}%{_infodir}/dir
 
+# drop the gpg scheme interpreter
+rm -f %{buildroot}%{_bindir}/gpgscm
 
 %check
 # need scratch gpg database for tests
@@ -203,7 +205,6 @@ fi
 %{_infodir}/*.info*
 %{_mandir}/man?/*
 %exclude %{_mandir}/man?/gpgsm*
-%exclude %{_bindir}/gpgscm*
 
 %files smime
 %{_bindir}/gpgsm*
@@ -212,8 +213,8 @@ fi
 
 
 %changelog
-* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.21-4
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+* Fri Jul 28 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.21-4
+- explictly remove gpgscm from the buildroot
 
 * Tue Jul 18 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.21-3
 - rebase the insttools patch
