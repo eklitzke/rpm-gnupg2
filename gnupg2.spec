@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.1.21
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -213,6 +213,9 @@ fi
 
 
 %changelog
+* Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.21-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
+
 * Fri Jul 28 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.21-4
 - explictly remove gpgscm from the buildroot
 
