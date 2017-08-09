@@ -1,0 +1,46 @@
+diff -up gnupg-2.1.22/configure.ac.build gnupg-2.1.22/configure.ac
+--- gnupg-2.1.22/configure.ac.build	2017-07-25 15:31:56.000000000 +0200
++++ gnupg-2.1.22/configure.ac	2017-08-09 16:24:48.466263808 +0200
+@@ -89,8 +89,8 @@ AC_GNU_SOURCE
+ # CFLAGS (they are restored at the end of the configure script).  This
+ # is because some configure checks don't work with -Werror, but we'd
+ # like to use -Werror with our build.
+-CFLAGS_orig=$CFLAGS
+-CFLAGS=
++#CFLAGS_orig=$CFLAGS
++#CFLAGS=
+ 
+ # Some status variables.
+ have_gpg_error=no
+@@ -1682,7 +1682,7 @@ fi
+ #
+ # Add user CFLAGS.
+ #
+-CFLAGS="$CFLAGS $CFLAGS_orig"
++# CFLAGS="$CFLAGS $CFLAGS_orig"
+ 
+ #
+ # Decide what to build
+diff -up gnupg-2.1.22/configure.build gnupg-2.1.22/configure
+--- gnupg-2.1.22/configure.build	2017-07-28 19:10:42.000000000 +0200
++++ gnupg-2.1.22/configure	2017-08-09 16:24:48.467263833 +0200
+@@ -5100,8 +5100,8 @@ $as_echo "$ac_cv_safe_to_define___extens
+ # CFLAGS (they are restored at the end of the configure script).  This
+ # is because some configure checks don't work with -Werror, but we'd
+ # like to use -Werror with our build.
+-CFLAGS_orig=$CFLAGS
+-CFLAGS=
++#CFLAGS_orig=$CFLAGS
++#CFLAGS=
+ 
+ # Some status variables.
+ have_gpg_error=no
+@@ -15676,7 +15676,7 @@ fi
+ #
+ # Add user CFLAGS.
+ #
+-CFLAGS="$CFLAGS $CFLAGS_orig"
++# CFLAGS="$CFLAGS $CFLAGS_orig"
+ 
+ #
+ # Decide what to build

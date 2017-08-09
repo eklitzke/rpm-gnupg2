@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.21
-Release: 5%{?dist}
+Version: 2.1.22
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -15,11 +15,10 @@ Patch2:  gnupg-2.1.19-exponential.patch
 # needed for compatibility with system FIPS mode
 Patch3:  gnupg-2.1.10-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
-Patch4:  gnupg-2.1.20-file-is-digest.patch
+Patch4:  gnupg-2.1.22-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
-Patch7:  gnupg-2.1.20-build.patch
-Patch8:  gnupg-2.1.21-scdaemon-path.patch
+Patch7:  gnupg-2.1.22-build.patch
 # allow 8192 bit RSA keys in keygen UI with large RSA
 Patch9:  gnupg-2.1.21-large-rsa.patch
 
@@ -100,7 +99,6 @@ to the base GnuPG package
 %patch5 -p1 -b .keyusage
 %patch6 -p1 -b .fips
 %patch7 -p1 -b .build
-%patch8 -p1 -b .scdaemon
 %patch9 -p1 -b .large-rsa
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
@@ -213,6 +211,9 @@ fi
 
 
 %changelog
+* Wed Aug  9 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.22-1
+- upgrade to 2.1.22
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.21-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
