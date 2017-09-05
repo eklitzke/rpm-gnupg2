@@ -112,7 +112,7 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/scdaemon.c
 %build
 
 %configure \
-%if ! 0%{?rhel} > 5
+%if ! (0%{?rhel} > 5)
   --enable-gpg-is-gpg2 \
 %endif
   --disable-gpgtar \
