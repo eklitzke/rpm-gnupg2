@@ -1,7 +1,7 @@
-diff -up gnupg-2.1.22/g10/gpg.c.file-is-digest gnupg-2.1.22/g10/gpg.c
---- gnupg-2.1.22/g10/gpg.c.file-is-digest	2017-08-09 16:22:19.208599993 +0200
-+++ gnupg-2.1.22/g10/gpg.c	2017-08-09 16:22:19.210600042 +0200
-@@ -379,6 +379,7 @@ enum cmd_and_opt_values
+diff -up gnupg-2.2.0/g10/gpg.c.file-is-digest gnupg-2.2.0/g10/gpg.c
+--- gnupg-2.2.0/g10/gpg.c.file-is-digest	2017-09-05 14:51:31.658702228 +0200
++++ gnupg-2.2.0/g10/gpg.c	2017-09-05 14:52:48.467413778 +0200
+@@ -380,6 +380,7 @@ enum cmd_and_opt_values
      oTTYtype,
      oLCctype,
      oLCmessages,
@@ -9,7 +9,7 @@ diff -up gnupg-2.1.22/g10/gpg.c.file-is-digest gnupg-2.1.22/g10/gpg.c
      oXauthority,
      oGroup,
      oUnGroup,
-@@ -825,6 +826,7 @@ static ARGPARSE_OPTS opts[] = {
+@@ -826,6 +827,7 @@ static ARGPARSE_OPTS opts[] = {
    ARGPARSE_s_s (oPersonalCompressPreferences,
                                           "personal-compress-preferences", "@"),
    ARGPARSE_s_s (oFakedSystemTime, "faked-system-time", "@"),
@@ -17,15 +17,15 @@ diff -up gnupg-2.1.22/g10/gpg.c.file-is-digest gnupg-2.1.22/g10/gpg.c
    ARGPARSE_s_s (oWeakDigest, "weak-digest","@"),
    ARGPARSE_s_n (oUnwrap, "unwrap", "@"),
    ARGPARSE_s_n (oOnlySignTextIDs, "only-sign-text-ids", "@"),
-@@ -2384,6 +2386,7 @@ main (int argc, char **argv)
+@@ -2388,6 +2390,7 @@ main (int argc, char **argv)
+     opt.keyid_format = KF_NONE;
+     opt.def_sig_expire = "0";
+     opt.def_cert_expire = "0";
++    opt.file_is_digest = 0;
      gnupg_set_homedir (NULL);
      opt.passphrase_repeat = 1;
      opt.emit_version = 0;
-+    opt.file_is_digest = 0;
-     opt.weak_digests = NULL;
-     additional_weak_digest("MD5");
- 
-@@ -2944,6 +2947,7 @@ main (int argc, char **argv)
+@@ -2954,6 +2957,7 @@ main (int argc, char **argv)
  	    opt.verify_options&=~VERIFY_SHOW_PHOTOS;
  	    break;
  	  case oPhotoViewer: opt.photo_viewer = pargs.r.ret_str; break;
@@ -33,10 +33,10 @@ diff -up gnupg-2.1.22/g10/gpg.c.file-is-digest gnupg-2.1.22/g10/gpg.c
  
  	  case oForceMDC: opt.force_mdc = 1; break;
  	  case oNoForceMDC: opt.force_mdc = 0; break;
-diff -up gnupg-2.1.22/g10/options.h.file-is-digest gnupg-2.1.22/g10/options.h
---- gnupg-2.1.22/g10/options.h.file-is-digest	2017-07-24 20:57:50.000000000 +0200
-+++ gnupg-2.1.22/g10/options.h	2017-08-09 16:22:19.210600042 +0200
-@@ -212,6 +212,7 @@ struct
+diff -up gnupg-2.2.0/g10/options.h.file-is-digest gnupg-2.2.0/g10/options.h
+--- gnupg-2.2.0/g10/options.h.file-is-digest	2017-08-09 15:46:17.000000000 +0200
++++ gnupg-2.2.0/g10/options.h	2017-09-05 14:51:31.661702295 +0200
+@@ -213,6 +213,7 @@ struct
    int no_auto_check_trustdb;
    int preserve_permissions;
    int no_homedir_creation;
@@ -44,9 +44,9 @@ diff -up gnupg-2.1.22/g10/options.h.file-is-digest gnupg-2.1.22/g10/options.h
    struct groupitem *grouplist;
    int mangle_dos_filenames;
    int enable_progress_filter;
-diff -up gnupg-2.1.22/g10/sign.c.file-is-digest gnupg-2.1.22/g10/sign.c
---- gnupg-2.1.22/g10/sign.c.file-is-digest	2017-07-28 17:35:18.000000000 +0200
-+++ gnupg-2.1.22/g10/sign.c	2017-08-09 16:23:21.437127512 +0200
+diff -up gnupg-2.2.0/g10/sign.c.file-is-digest gnupg-2.2.0/g10/sign.c
+--- gnupg-2.2.0/g10/sign.c.file-is-digest	2017-07-28 19:39:06.000000000 +0200
++++ gnupg-2.2.0/g10/sign.c	2017-09-05 14:51:31.661702295 +0200
 @@ -40,6 +40,7 @@
  #include "pkglue.h"
  #include "../common/sysutils.h"

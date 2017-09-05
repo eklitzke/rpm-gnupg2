@@ -1,6 +1,6 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.1.22
+Version: 2.2.0
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -15,7 +15,7 @@ Patch2:  gnupg-2.1.19-exponential.patch
 # needed for compatibility with system FIPS mode
 Patch3:  gnupg-2.1.10-secmem.patch
 # non-upstreamable patch adding file-is-digest option needed for Copr
-Patch4:  gnupg-2.1.22-file-is-digest.patch
+Patch4:  gnupg-2.2.0-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
 Patch7:  gnupg-2.1.22-build.patch
@@ -112,6 +112,9 @@ sed -i -e 's/"libpcsclite\.so"/"%{pcsclib}"/' scd/scdaemon.c
 %build
 
 %configure \
+%if 0%{?rhel} > 5
+  --enable-gpg-is-gpg2 \
+%endif
   --disable-gpgtar \
   --disable-rpath \
   --enable-g13 \
@@ -145,10 +148,10 @@ install -m644 -p AUTHORS NEWS THANKS TODO \
 
 %if 0%{?rhel} > 5
 # compat symlinks
-ln -sf gpg2 %{buildroot}%{_bindir}/gpg
-ln -sf gpgv2 %{buildroot}%{_bindir}/gpgv
-ln -sf gpg2.1 %{buildroot}%{_mandir}/man1/gpg.1
-ln -sf gpgv2.1 %{buildroot}%{_mandir}/man1/gpgv.1
+ln -sf gpg %{buildroot}%{_bindir}/gpg2
+ln -sf gpgv %{buildroot}%{_bindir}/gpgv2
+ln -sf gpg.1 %{buildroot}%{_mandir}/man1/gpg2.1
+ln -sf gpgv.1 %{buildroot}%{_mandir}/man1/gpgv2.1
 ln -sf gnupg.7 %{buildroot}%{_mandir}/man7/gnupg2.7
 %endif
 
@@ -211,6 +214,9 @@ fi
 
 
 %changelog
+* Tue Sep  5 2017 Tomáš Mráz <tmraz@redhat.com> - 2.2.0-1
+- upgrade to 2.2.0
+
 * Wed Aug  9 2017 Tomáš Mráz <tmraz@redhat.com> - 2.1.22-1
 - upgrade to 2.1.22
 
