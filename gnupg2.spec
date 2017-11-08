@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.2.1
-Release: 1%{?dist}
+Version: 2.2.2
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -18,7 +18,6 @@ Patch3:  gnupg-2.1.10-secmem.patch
 Patch4:  gnupg-2.2.0-file-is-digest.patch
 Patch5:  gnupg-2.1.1-ocsp-keyusage.patch
 Patch6:  gnupg-2.1.1-fips-algo.patch
-Patch7:  gnupg-2.1.22-build.patch
 # allow 8192 bit RSA keys in keygen UI with large RSA
 Patch9:  gnupg-2.1.21-large-rsa.patch
 
@@ -98,7 +97,6 @@ to the base GnuPG package
 %patch4 -p1 -b .file-is-digest
 %patch5 -p1 -b .keyusage
 %patch6 -p1 -b .fips
-%patch7 -p1 -b .build
 %patch9 -p1 -b .large-rsa
 
 # pcsc-lite library major: 0 in 1.2.0, 1 in 1.2.9+ (dlopen()'d in pcsc-wrapper)
@@ -214,6 +212,9 @@ fi
 
 
 %changelog
+* Wed Nov  8 2017 Tomáš Mráz <tmraz@redhat.com> - 2.2.2-1
+- upgrade to 2.2.2
+
 * Tue Oct  3 2017 Tomáš Mráz <tmraz@redhat.com> - 2.2.1-1
 - upgrade to 2.2.1
 
