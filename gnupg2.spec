@@ -1,6 +1,6 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.2.3
+Version: 2.2.4
 Release: 1%{?dist}
 
 License: GPLv3+
@@ -212,6 +212,9 @@ fi
 
 
 %changelog
+* Fri Jan 12 2018 Tomáš Mráz <tmraz@redhat.com> - 2.2.4-1
+- upgrade to 2.2.4
+
 * Tue Nov 21 2017 Tomáš Mráz <tmraz@redhat.com> - 2.2.3-1
 - upgrade to 2.2.3
 
