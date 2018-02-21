@@ -24,6 +24,7 @@ Patch9:  gnupg-2.1.21-large-rsa.patch
 URL:     http://www.gnupg.org/
 
 #BuildRequires: automake libtool texinfo transfig
+BuildRequires: gcc
 BuildRequires: bzip2-devel
 BuildRequires: curl-devel
 BuildRequires: docbook-utils
