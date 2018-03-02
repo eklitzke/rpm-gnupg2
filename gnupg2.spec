@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
-Version: 2.2.4
-Release: 2%{?dist}
+Version: 2.2.5
+Release: 1%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -213,6 +213,9 @@ fi
 
 
 %changelog
+* Fri Mar  2 2018 Tomáš Mráz <tmraz@redhat.com> - 2.2.5-1
+- upgrade to 2.2.5
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.2.4-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
