@@ -1,7 +1,7 @@
 Summary: Utility for secure communication and data storage
 Name:    gnupg2
 Version: 2.2.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 License: GPLv3+
 Group:   Applications/System
@@ -42,6 +42,8 @@ BuildRequires: zlib-devel
 BuildRequires: gnutls-devel
 BuildRequires: sqlite-devel
 BuildRequires: fuse
+%{?systemd_requires}
+BuildRequires: systemd
 
 Requires: libgcrypt >= 1.7.0
 
@@ -160,6 +162,12 @@ rm -f %{buildroot}%{_infodir}/dir
 # drop the gpg scheme interpreter
 rm -f %{buildroot}%{_bindir}/gpgscm
 
+# copy systemd user units to the system location
+mkdir -p %{buildroot}%{_userunitdir}
+mv %{buildroot}%{_pkgdocdir}/examples/systemd-user/*.{socket,service}\
+   %{buildroot}%{_userunitdir}
+rm -rf %{buildroot}%{_pkgdocdir}/examples/systemd-user
+
 %check
 # need scratch gpg database for tests
 mkdir -p $HOME/.gnupg
@@ -168,11 +176,13 @@ make -k check
 
 %post
 /sbin/install-info %{_infodir}/gnupg.info %{_infodir}/dir ||:
+%systemd_user_post dirmngr.{service,socket} gpg-agent.service gpg-agent{,-browser,-extra,-ssh}.socket
 
 %preun
 if [ $1 -eq 0 ]; then
   /sbin/install-info --delete %{_infodir}/gnupg.info %{_infodir}/dir ||:
 fi
+%systemd_user_preun dirmngr.{service,socket} gpg-agent.service gpg-agent{,-browser,-extra,-ssh}.socket
 
 
 %files -f %{name}.lang
@@ -192,6 +202,7 @@ fi
 %{_bindir}/g13
 %{_bindir}/dirmngr
 %{_bindir}/dirmngr-client
+%{_userunitdir}/*
 %if 0%{?rhel} > 5
 %{_bindir}/gpg
 %{_bindir}/gpgv
@@ -213,6 +224,9 @@ fi
 
 
 %changelog
+* Mon Mar 26 2018 Evan Klitzke <evan@eklitzke.org> - 2.2.5-2
+- Install systemd user units to the system location.
+
 * Fri Mar  2 2018 Tomáš Mráz <tmraz@redhat.com> - 2.2.5-1
 - upgrade to 2.2.5
 
